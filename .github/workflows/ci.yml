@@ -1,0 +1,105 @@
+name: Flutter Package CI/CD
+
+on:
+  push:
+    branches: 
+      - main
+      - master
+    tags: 
+      - 'v*'
+  pull_request:
+    branches: 
+      - main
+      - master
+
+jobs:
+  analyze:
+    name: Analyze Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4  # Updated to v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true  # Added caching for faster runs
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Analyze code
+        run: flutter analyze --no-fatal-infos  # Added static analysis
+      - name: Install Pana
+        run: dart pub global activate pana
+      - name: Verify package score
+        run: |
+          PANA=$(dart pub global run pana . --no-warning)
+          PANA_SCORE=$(echo "$PANA" | sed -n 's/.*Points: \([0-9]*\)\/.*/\1/p')
+          echo "Package score: $PANA_SCORE"
+          if [ -z "$PANA_SCORE" ]; then
+            echo "Failed to parse Pana score. Full output:"
+            echo "$PANA"
+            exit 1
+          elif [ "$PANA_SCORE" -lt "90" ]; then
+            echo "Package score is too low. Check the following issues:"
+            echo "$PANA"
+            exit 1
+          fi
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Run tests
+        run: flutter test --coverage
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+  format:
+    name: Check Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+      - name: Check code formatting
+        run: dart format --set-exit-if-changed .
+
+  publish:
+    name: Publish to pub.dev
+    needs: [analyze, test]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Setup pub credentials
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+        run: |
+          mkdir -p $HOME/.config/dart
+          echo "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json
+      - name: Dry run publish
+        run: flutter pub publish --dry-run
+      - name: Publish package
+        run: flutter pub publish --force
