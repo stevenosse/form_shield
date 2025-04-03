@@ -48,7 +48,8 @@ class PasswordRule extends ValidationRule<String> {
     final List<String> errors = [];
 
     if (value.length < options.minLength) {
-      errors.add('Password must be at least ${options.minLength} characters long');
+      errors.add(
+          'Password must be at least ${options.minLength} characters long');
     }
 
     if (options.requireUppercase && !value.contains(RegExp(r'[A-Z]'))) {
@@ -63,7 +64,8 @@ class PasswordRule extends ValidationRule<String> {
       errors.add('Password must contain at least one digit');
     }
 
-    if (options.requireSpecialChar && !value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+    if (options.requireSpecialChar &&
+        !value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
       errors.add('Password must contain at least one special character');
     }
 

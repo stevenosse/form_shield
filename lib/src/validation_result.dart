@@ -15,5 +15,6 @@ class ValidationResult {
   const ValidationResult._(this.isValid, this.errorMessage);
 
   @override
-  String toString() => 'ValidationResult(isValid: $isValid, errorMessage: $errorMessage)';
+  String toString() =>
+      'ValidationResult(isValid: $isValid, errorMessage: $errorMessage)';
 }

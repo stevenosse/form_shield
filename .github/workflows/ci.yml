@@ -18,16 +18,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4  # Updated to v4
-      - name: Setup Flutter
+        uses: actions/checkout@v4
+      - name: Setup flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          cache: true  # Added caching for faster runs
+          cache: true
       - name: Install dependencies
         run: flutter pub get
       - name: Analyze code
-        run: flutter analyze --no-fatal-infos  # Added static analysis
+        run: flutter analyze --no-fatal-infos
       - name: Install Pana
         run: dart pub global activate pana
       - name: Verify package score
@@ -46,7 +46,7 @@ jobs:
           fi
 
   test:
-    name: Run Tests
+    name: Run tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -67,7 +67,7 @@ jobs:
           fail_ci_if_error: false
 
   format:
-    name: Check Formatting
+    name: Check formatting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -86,7 +86,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Setup Flutter
+      - name: Setup flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'

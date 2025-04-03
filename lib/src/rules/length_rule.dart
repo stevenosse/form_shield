@@ -15,7 +15,8 @@ class LengthRule extends ValidationRule<String> {
     this.maxLength,
     String? errorMessage,
   }) : super(
-          errorMessage: errorMessage ?? _getDefaultErrorMessage(minLength, maxLength),
+          errorMessage:
+              errorMessage ?? _getDefaultErrorMessage(minLength, maxLength),
         );
 
   static String _getDefaultErrorMessage(int? minLength, int? maxLength) {

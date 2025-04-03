@@ -15,7 +15,8 @@ class ValueRule extends ValidationRule<num> {
     this.maxValue,
     String? errorMessage,
   }) : super(
-          errorMessage: errorMessage ?? _getDefaultErrorMessage(minValue, maxValue),
+          errorMessage:
+              errorMessage ?? _getDefaultErrorMessage(minValue, maxValue),
         );
 
   static String _getDefaultErrorMessage(num? minValue, num? maxValue) {

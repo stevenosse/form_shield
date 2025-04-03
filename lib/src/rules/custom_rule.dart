@@ -10,7 +10,7 @@ class CustomRule<T> extends ValidationRule<T> {
   const CustomRule({
     required bool Function(T? value) validator,
     required super.errorMessage,
-  })  : _validator = validator;
+  }) : _validator = validator;
 
   @override
   ValidationResult validate(T? value) {
