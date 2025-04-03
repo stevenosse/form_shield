@@ -1,11 +1,11 @@
+# Form Shield
+
 <p align="center">
-  <img src="logo.svg" width="200" alt="Form Shield Logo">
+  <img src="https://raw.githubusercontent.com/stevenosse/form_shield/refs/heads/main/logo.svg" width="200" alt="Form Shield Logo">
 </p>
 
 [![pub version](https://img.shields.io/pub/v/form_shield.svg)](https://pub.dev/packages/form_shield)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-
-# Form Shield
 
 A declarative, rule-based form validation library for Flutter apps, offering customizable rules and messages, seamless integration with Flutter forms, type safety, and chainable validation.
 
