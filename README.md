@@ -6,6 +6,8 @@
 
 [![pub version](https://img.shields.io/pub/v/form_shield.svg)](https://pub.dev/packages/form_shield)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![codecov](https://codecov.io/gh/stevenosse/form_shield/branch/main/graph/badge.svg)](https://codecov.io/gh/stevenosse/form_shield)
+
 
 A declarative, rule-based form validation library for Flutter apps, offering customizable rules and messages, seamless integration with Flutter forms, type safety, and chainable validation.
 

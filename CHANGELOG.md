@@ -1,5 +1,9 @@
 # Changelog
 
+[0.2.2] - 2025-04-04
+### Changed
+- Update documentation
+
 ## [0.2.1] - 2025-04-04
 ### Changed
 - Updated documentation
