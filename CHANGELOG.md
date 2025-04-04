@@ -1,6 +1,10 @@
 # Changelog
 
-## [0.2.0] - 2025-05-15
+## [0.2.1] - 2025-04-04
+### Changed
+- Updated documentation
+
+## [0.2.0] - 2025-04-04
 
 ### Added
 
