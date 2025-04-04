@@ -74,7 +74,7 @@ void main() {
         final rule = MockValidationRule<String>(
             shouldPass: false, errorMessage: 'Error');
 
-        final validator = ValidatorExtensions.forString([rule]);
+        final validator = Validator.forString([rule]);
 
         expect(validator, isA<Validator<String>>());
         expect(validator('test'), 'Error');
@@ -84,7 +84,7 @@ void main() {
         final rule =
             MockValidationRule<num>(shouldPass: false, errorMessage: 'Error');
 
-        final validator = ValidatorExtensions.forNumber([rule]);
+        final validator = Validator.forNumber([rule]);
 
         expect(validator, isA<Validator<num>>());
         expect(validator(42), 'Error');
@@ -94,7 +94,7 @@ void main() {
         final rule =
             MockValidationRule<bool>(shouldPass: false, errorMessage: 'Error');
 
-        final validator = ValidatorExtensions.forBoolean([rule]);
+        final validator = Validator.forBoolean([rule]);
 
         expect(validator, isA<Validator<bool>>());
         expect(validator(true), 'Error');
@@ -104,7 +104,7 @@ void main() {
         final rule = MockValidationRule<DateTime>(
             shouldPass: false, errorMessage: 'Error');
 
-        final validator = ValidatorExtensions.forDate([rule]);
+        final validator = Validator.forDate([rule]);
 
         expect(validator, isA<Validator<DateTime>>());
         expect(validator(DateTime.now()), 'Error');
