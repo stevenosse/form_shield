@@ -4,10 +4,6 @@ version: 0.2.0
 homepage: https://github.com/stevenosse/form_shield
 issue_tracker: https://github.com/stevenosse/form_shield/issues
 
-screenshots:
-  - description: 'Package logo'
-    path: logo.svg
-
 environment:
   sdk: '>=3.0.0 <4.0.0'
   flutter: ">=3.0.0"

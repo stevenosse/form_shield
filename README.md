@@ -222,6 +222,10 @@ TextFormField(
 - `MaxValueRule` - Validates that a numeric value is at most a specified maximum
 - `PhoneRule` - Validates that a string is a valid phone number
 - `CountryPhoneRule` - Validates that a string is a valid phone number for a specific country
+- `UrlRule` - Validates that a string is a valid URL
+- `IPAddressRule` - Validates that a string is a valid IPv4 or IPv6 address
+- `CreditCardRule` - Validates that a string is a valid credit card number
+- `DateRangeRule` - Validates that a date is within a specified range
 - `CustomRule` - A validation rule that uses a custom function to validate values
 - `DynamicCustomRule` - A validation rule that uses a custom function to validate values and return a dynamic error message
 
