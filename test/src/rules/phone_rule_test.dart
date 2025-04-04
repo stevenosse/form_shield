@@ -40,7 +40,6 @@ void main() {
           '12',
           '1234',
           'abc123456789',
-          // Removing '123-456-789' as the current regex implementation accepts it
           '+1234abcdefg',
         ];
 
@@ -59,8 +58,6 @@ void main() {
           '+1234567890',
           '+12345678901',
           '123-456-7890',
-          // Removing formats that don't match the default regex pattern
-          // '(123) 456-7890',
           '123 456 7890',
           '+1 123 456 7890',
         ];
