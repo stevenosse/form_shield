@@ -47,6 +47,7 @@ class CountryPhoneRule extends ValidationRule<String> {
     'TD': r'^(\+235|235)?[-. ]?[6-9][0-9]{7}$',
   };
 
+  /// Creates a phone number validation rule with the specified configuration and error message.
   CountryPhoneRule({
     required this.countryCode,
     super.errorMessage = 'Please enter a valid phone number',

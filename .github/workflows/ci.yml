@@ -63,29 +63,3 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
-
-  publish:
-    name: Publish to pub.dev
-    needs: [analyze, test]
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Setup flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          cache: true
-      - name: Install dependencies
-        run: flutter pub get
-      - name: Setup pub credentials
-        env:
-          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
-        run: |
-          mkdir -p $HOME/.config/dart
-          echo "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json
-      - name: Dry run publish
-        run: flutter pub publish --dry-run
-      - name: Publish package
-        run: flutter pub publish --force

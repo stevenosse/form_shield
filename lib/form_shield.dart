@@ -8,3 +8,8 @@ export 'src/rules/value_rule.dart';
 export 'src/rules/phone_rule.dart';
 export 'src/rules/required_rule.dart';
 export 'src/rules/custom_rule.dart';
+export 'src/rules/date_rule.dart';
+export 'src/rules/date_range_rule.dart';
+export 'src/rules/url_rule.dart';
+export 'src/rules/ip_address_rule.dart';
+export 'src/rules/credit_card_rule.dart';

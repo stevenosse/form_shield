@@ -1,9 +1,30 @@
 # Changelog
 
-All notable changes to the Form Shield package will be documented in this file.
+## [0.2.0] - 2025-05-15
 
-The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0.html).
+### Added
+
+- New validation rules:
+  - `DateRule` - Validates dates with min and max constraints
+  - `DateRangeRule` - Validates date ranges between two fields
+  - `URLRule` - Validates URLs with optional protocol checking
+  - `IPAddressRule` - Validates IPv4 and IPv6 addresses
+  - `CreditCardRule` - Validates credit card numbers with Luhn algorithm
+- Updated documentation
+
+### Changed
+
+- Improved error message formatting
+- Enhanced type inference for validation rules
+- Better handling of null values
+- Updated documentation with more examples
+
+### Fixed
+
+- Edge cases in phone number validation
+- Memory leak in form validation
+- Type conversion issues in numeric validators
+
 
 ## [0.1.0] - 2025-04-03
 

@@ -29,7 +29,6 @@ void main() {
 
       final validator = Validator<String>([rule1, rule2]);
 
-      // Validator is working correctly if it validates without errors
       expect(validator('test'), null);
     });
 
@@ -42,9 +41,7 @@ void main() {
       final validator1 = Validator<String>([rule1]);
       final validator2 = validator1.addRule(rule2);
 
-      // Original validator should still pass
       expect(validator1('test'), null);
-      // New validator should fail with the second rule's error message
       expect(validator2('test'), 'Error 2');
     });
 
