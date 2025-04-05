@@ -1,6 +1,19 @@
 # Changelog
 
-[0.2.2] - 2025-04-04
+## [0.3.0] - 2025-04-05
+### Added
+- Asynchronous validation support:
+  - New `AsyncValidationRule` base class for creating async-specific validation rules
+  - Async validation state tracking with `AsyncValidationState` class
+  - Debouncing support for async validation to prevent excessive API calls
+  - Manual async validation triggering with `validateAsync()` method
+  - Example implementation of username availability checking
+- New properties for validation state management:
+  - `isValidating` - Indicates if async validation is in progress
+  - `isValid` - Indicates if the last async validation was successful
+  - `errorMessage` - Provides the current error message from either sync or async validation
+
+## [0.2.2] - 2025-04-04
 ### Changed
 - Update documentation
 
