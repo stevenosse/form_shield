@@ -39,6 +39,11 @@ It provides a simple yet powerful way to define and apply validation logic to yo
   - [Password confirmation](#password-confirmation)
 - [Available validation rules](#available-validation-rules)
 - [Creating your own validation rules](#creating-your-own-validation-rules)
+- [Asynchronous validation rules](#asynchronous-validation-rules)
+  - [Username availability checker](#example-username-availability-checker)
+  - [Using async validation in forms](#using-async-validation-in-forms)
+  - [Debouncing async validation](#debouncing-async-validation)
+  - [Manually triggering async validation](#manually-triggering-async-validation)
 - [Contributing](#contributing)
 - [License](#license)
 
