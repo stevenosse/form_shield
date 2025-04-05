@@ -29,7 +29,9 @@ void main() {
       expect(state.errorMessage, null);
     });
 
-    test('invalid() sets isValidating to false, isValid to false, and sets error message', () {
+    test(
+        'invalid() sets isValidating to false, isValid to false, and sets error message',
+        () {
       const errorMessage = 'Test error message';
       state.invalid(errorMessage);
       expect(state.isValidating, false);
@@ -42,7 +44,7 @@ void main() {
       state.invalid('Error');
       expect(state.isValid, false);
       expect(state.errorMessage, 'Error');
-      
+
       // Then reset
       state.reset();
       expect(state.isValidating, false);
@@ -58,7 +60,7 @@ void main() {
       state.valid();
       expect(state.isValidating, false);
       expect(state.isValid, true);
-      
+
       // Valid -> Validating -> Invalid
       state.validating();
       expect(state.isValidating, true);

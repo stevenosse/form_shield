@@ -67,7 +67,7 @@ class Validator<T> {
   }
 
   /// Returns the async validation state.
-  /// 
+  ///
   /// Note: This property is maintained for backward compatibility.
   /// Consider using the direct properties (isValidating, isValid) instead.
   AsyncValidationState get asyncState => _asyncState;

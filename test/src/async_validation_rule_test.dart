@@ -16,11 +16,11 @@ class TestAsyncValidationRule extends AsyncValidationRule<String> {
   @override
   Future<ValidationResult> validateAsync(String? value) async {
     await Future.delayed(delay);
-    
+
     if (shouldThrowError) {
       throw Exception('Test validation error');
     }
-    
+
     if (shouldPass) {
       return const ValidationResult.success();
     } else {
@@ -55,7 +55,8 @@ void main() {
       expect(result.errorMessage, null);
     });
 
-    test('validateAsync returns success result when validation passes', () async {
+    test('validateAsync returns success result when validation passes',
+        () async {
       final rule = TestAsyncValidationRule(
         shouldPass: true,
         errorMessage: errorMessage,
@@ -67,7 +68,9 @@ void main() {
       expect(result.errorMessage, null);
     });
 
-    test('validateAsync returns error result with correct message when validation fails', () async {
+    test(
+        'validateAsync returns error result with correct message when validation fails',
+        () async {
       final rule = TestAsyncValidationRule(
         shouldPass: false,
         errorMessage: errorMessage,
