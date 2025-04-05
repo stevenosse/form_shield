@@ -14,11 +14,12 @@ class Validator<T> {
   /// The state of asynchronous validation.
   final AsyncValidationState _asyncState;
 
-  /// Timer for debouncing async validation calls.
   Timer? _debounceTimer;
 
   /// Default debounce duration for async validation.
   final Duration _debounceDuration;
+
+  String? _syncErrorMessage;
 
   T? _lastValidatedValue;
 
@@ -28,7 +29,8 @@ class Validator<T> {
     Duration debounceDuration = const Duration(milliseconds: 300),
   })  : _rules = List.unmodifiable(rules),
         _asyncState = AsyncValidationState(),
-        _debounceDuration = debounceDuration;
+        _debounceDuration = debounceDuration,
+        _syncErrorMessage = null;
 
   static Validator<String> forString(
     List<ValidationRule<String>> rules, {
@@ -64,8 +66,21 @@ class Validator<T> {
     return Validator<T>([..._rules, rule], debounceDuration: _debounceDuration);
   }
 
-  /// Returns the async validation state if rules are present, null otherwise.
+  /// Returns the async validation state.
+  /// 
+  /// Note: This property is maintained for backward compatibility.
+  /// Consider using the direct properties (isValidating, isValid) instead.
   AsyncValidationState get asyncState => _asyncState;
+
+  /// Returns true if async validation is currently in progress.
+  bool get isValidating => _asyncState.isValidating;
+
+  /// Returns true if the last async validation was successful.
+  bool get isValid => _asyncState.isValid;
+
+  /// Returns the current error message from either sync or async validation.
+  /// Sync errors take precedence over async errors.
+  String? get errorMessage => _syncErrorMessage ?? _asyncState.errorMessage;
 
   /// Executes the validation logic for the given [value] against all registered rules.
   ///
@@ -77,10 +92,13 @@ class Validator<T> {
     for (final rule in _rules) {
       final result = rule.validate(value);
       if (!result.isValid) {
+        _syncErrorMessage = result.errorMessage;
         _asyncState.reset();
-        return result.errorMessage;
+        return _syncErrorMessage;
       }
     }
+
+    _syncErrorMessage = null;
 
     if (value != _lastValidatedValue) {
       _lastValidatedValue = value;
@@ -95,7 +113,6 @@ class Validator<T> {
     _debounceTimer?.cancel();
     _asyncState.validating();
 
-    // Start a new debounce timer
     _debounceTimer = Timer(_debounceDuration, () async {
       for (final rule in _rules) {
         try {

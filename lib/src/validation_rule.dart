@@ -13,7 +13,6 @@ abstract class ValidationRule<T> {
   /// Validates the given value and returns a [ValidationResult].
   ValidationResult validate(T? value);
 
-
   /// Validates the given value asynchronously and returns a [Future<ValidationResult>].
   ///
   /// This method is only used for async validation rules. By default, it wraps the

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:form_shield/form_shield.dart';
 
-class UsernameAvailabilityRule extends ValidationRule<String> {
+class UsernameAvailabilityRule extends AsyncValidationRule<String> {
   final Future<bool> Function(String username) _checkAvailability;
 
   const UsernameAvailabilityRule({
@@ -84,22 +84,13 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
   }
 
   void _submitForm() {
-    final asyncState = _usernameValidator.asyncState;
     if (_formKey.currentState!.validate() &&
-        !asyncState.isValidating &&
-        asyncState.isValid) {
+        !_usernameValidator.isValidating &&
+        _usernameValidator.isValid) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Registration successful!'),
           backgroundColor: Colors.green,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    } else if (!asyncState.isValid) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Validation failed: ${asyncState.errorMessage}'),
-          backgroundColor: Colors.red,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -156,7 +147,7 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                             listenable: _usernameValidator.asyncState,
                             builder: (context, child) {
                               Widget? suffixIcon;
-                              if (_usernameValidator.asyncState.isValidating) {
+                              if (_usernameValidator.isValidating) {
                                 suffixIcon = const SizedBox(
                                   width: 20,
                                   height: 20,
@@ -164,39 +155,17 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                                     strokeWidth: 2,
                                   ),
                                 );
-                              } else if (_usernameValidator
-                                  .asyncState
-                                  .isValid) {
+                              } else if (_usernameValidator.isValid) {
                                 suffixIcon = const Icon(
                                   Icons.check_circle,
                                   color: Colors.green,
                                 );
-                              } else if (!_usernameValidator
-                                  .asyncState
-                                  .isValid) {
+                              } else if (!_usernameValidator.isValid) {
                                 suffixIcon = const Icon(
                                   Icons.error,
                                   color: Colors.red,
                                 );
                               }
-
-                              final syncError =
-                                  _usernameController.text.isNotEmpty
-                                      ? _usernameValidator(
-                                        _usernameController.text,
-                                      )
-                                      : null;
-
-                              final errorToShow =
-                                  syncError ??
-                                  (!_usernameValidator.asyncState.isValid &&
-                                          !_usernameValidator
-                                              .asyncState
-                                              .isValidating
-                                      ? _usernameValidator
-                                          .asyncState
-                                          .errorMessage
-                                      : null);
 
                               return TextFormField(
                                 controller: _usernameController,
@@ -218,7 +187,7 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                                     borderRadius: BorderRadius.circular(12),
                                     borderSide: const BorderSide(width: 2),
                                   ),
-                                  errorText: errorToShow,
+                                  errorText: _usernameValidator.errorMessage,
                                   errorStyle: const TextStyle(
                                     color: Colors.red,
                                   ),
@@ -229,13 +198,9 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                                   );
                                   if (syncResult != null) return syncResult;
 
-                                  if (!_usernameValidator.asyncState.isValid &&
-                                      !_usernameValidator
-                                          .asyncState
-                                          .isValidating) {
-                                    return _usernameValidator
-                                        .asyncState
-                                        .errorMessage;
+                                  if (!_usernameValidator.isValid &&
+                                      !_usernameValidator.isValidating) {
+                                    return _usernameValidator.errorMessage;
                                   }
 
                                   return null;
@@ -263,7 +228,7 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                         builder: (context, _) {
                           return ElevatedButton(
                             onPressed:
-                                _usernameValidator.asyncState.isValidating
+                                _usernameValidator.isValidating
                                     ? null
                                     : _submitForm,
                             style: ElevatedButton.styleFrom(
