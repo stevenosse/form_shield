@@ -550,6 +550,48 @@ Future<void> _checkUsername() async {
 }
 ```
 
+### FAQ
+#### How can i show live async validation error message?
+You can use the `ListenableBuilder` widget to listen to the async validation state and show the error message when it becomes available. Here's an example:
+
+```dart
+```dart
+ListenableBuilder(
+  listenable: _asyncValidator.asyncState,
+  builder: (context, _) {
+    if (_composedValidator.isValidating) {
+      return Text('Checking username availability...');
+    } else if (!_composedValidator.isValid && _asyncValidator.errorMessage != null) {
+      return Text(
+        _asyncValidator.errorMessage!,
+        style: TextStyle(color: Colors.red),
+      );
+    } else if (_composedValidator.isValid) {
+      return Text(
+        'Username is available',
+        style: TextStyle(color: Colors.green),
+      );
+    }
+    return SizedBox.shrink();
+  },
+)
+```
+This will show the error message when the async validation fails, and a success message when it passes.
+
+For live validation feedback as the user types, make sure to set `autovalidateMode` on your Form:
+
+```dart
+Form(
+  key: _formKey,
+  autovalidateMode: AutovalidateMode.always, // Enable live validation
+  child: Column(
+    // Form fields...
+  ),
+)
+```
+
+This ensures validation runs automatically whenever input changes, providing immediate feedback.
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit issues, pull requests, or suggest improvements.

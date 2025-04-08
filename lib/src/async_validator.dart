@@ -58,7 +58,8 @@ class AsyncValidator<T> {
   /// Creates a new `AsyncValidator` instance by adding the provided [rule]
   /// to the existing list of rules, preserving the debounce duration.
   AsyncValidator<T> addRule(ValidationRule<T> rule) {
-    return AsyncValidator<T>([..._rules, rule], debounceDuration: _debounceDuration);
+    return AsyncValidator<T>([..._rules, rule],
+        debounceDuration: _debounceDuration);
   }
 
   /// Returns the async validation state.

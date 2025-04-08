@@ -11,20 +11,7 @@ class UsernameAvailabilityRule extends AsyncValidationRule<String> {
   }) : _checkAvailability = checkAvailability;
 
   @override
-  ValidationResult validate(String? value) {
-    if (value == null || value.isEmpty) {
-      return ValidationResult.error('Username cannot be empty');
-    }
-    return const ValidationResult.success();
-  }
-
-  @override
   Future<ValidationResult> validateAsync(String? value) async {
-    final syncResult = validate(value);
-    if (!syncResult.isValid) {
-      return syncResult;
-    }
-
     try {
       final isAvailable = await _checkAvailability(value!);
       if (isAvailable) {
@@ -58,11 +45,8 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
     super.initState();
 
     _asyncValidator = AsyncValidator<String>([
-      UsernameAvailabilityRule(
-        checkAvailability: _checkUsernameAvailability,
-        errorMessage: 'This username is already taken',
-      ),
-    ], debounceDuration: Duration(milliseconds: 500));
+      UsernameAvailabilityRule(checkAvailability: _checkUsernameAvailability),
+    ], debounceDuration: Duration(milliseconds: 100));
 
     _composedValidator = ComposedValidator<String>(
       syncValidators: [
@@ -104,7 +88,7 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Separated Validation API Example'), elevation: 0),
+      appBar: AppBar(title: const Text('Composed + async validation'), elevation: 0),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -129,12 +113,10 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                       ),
                       const SizedBox(height: 24),
                       Column(
+                        mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Username with Separated Validation',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                          ),
+                          const Text('Username', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                           const SizedBox(height: 4),
                           ListenableBuilder(
                             listenable: _asyncValidator.asyncState,
@@ -151,17 +133,15 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                               } else if (!_composedValidator.isValid) {
                                 suffixIcon = const Icon(Icons.error, color: Colors.red);
                               }
-
                               return TextFormField(
                                 controller: _usernameController,
                                 decoration: InputDecoration(
                                   labelText: 'Username',
                                   hintText: 'Choose a username',
                                   prefixIcon: const Icon(Icons.person),
-                                  suffixIcon:
-                                      suffixIcon != null
-                                          ? Padding(padding: const EdgeInsets.all(12.0), child: suffixIcon)
-                                          : null,
+                                  suffixIcon: suffixIcon != null
+                                      ? Padding(padding: const EdgeInsets.all(12.0), child: suffixIcon)
+                                      : null,
                                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
@@ -170,15 +150,13 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                                   errorText: _composedValidator.errorMessage,
                                   errorStyle: const TextStyle(color: Colors.red),
                                 ),
-                                validator: (value) {
-                                  return _composedValidator(value);
-                                },
+                                validator: _composedValidator.call,
                                 onChanged: (value) {
-                                  if (value.length >= 3) {
-                                    setState(() {
+                                  setState(() {
+                                    if (value.length >= 3) {
                                       _composedValidator(value);
-                                    });
-                                  }
+                                    } 
+                                  });
                                 },
                               );
                             },

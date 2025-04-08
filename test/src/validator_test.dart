@@ -69,6 +69,16 @@ void main() {
       expect(validator('test'), 'Error 2');
     });
 
+    test('errorMessage returns the current error message', () {
+      final rule =
+          MockValidationRule<String>(shouldPass: false, errorMessage: 'Error');
+
+      final validator = Validator<String>([rule]);
+      validator('test');
+
+      expect(validator.errorMessage, 'Error');
+    });
+
     group('ValidatorExtensions', () {
       test('forString creates a string validator', () {
         final rule = MockValidationRule<String>(
