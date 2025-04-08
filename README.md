@@ -24,9 +24,12 @@ It provides a simple yet powerful way to define and apply validation logic to yo
 🔗 **Chainable Rules:** Combine multiple validation rules effortlessly. <br />
 📚 **Comprehensive Built-in Rules:** Includes common validation scenarios out-of-the-box (required, email, password, length, numeric range, phone, etc.). <br />
 🛠️ **Extensible:** Create your own custom validation rules by extending the base class. <br />
+🔄 **Separate Sync/Async APIs:** Clearly separated APIs for synchronous and asynchronous validation needs. <br />
+🧩 **Composable Validators:** Combine multiple validators with the `ComposedValidator`. <br />
 
 ## Table of Contents
-- [Installation](#installation)
+- [Installation](#getting-started)
+  - [Installation](#installation)
 - [Usage](#usage)
   - [Basic usage](#basic-usage)
   - [Customizing error messages](#customizing-error-messages)
@@ -39,6 +42,10 @@ It provides a simple yet powerful way to define and apply validation logic to yo
   - [Password confirmation](#password-confirmation)
 - [Available validation rules](#available-validation-rules)
 - [Creating your own validation rules](#creating-your-own-validation-rules)
+- [Validation vrchitecture](#validation-architecture)
+  - [Synchronous validation](#synchronous-validation)
+  - [Asynchronous validation](#asynchronous-validation)
+  - [Composed validation](#composed-validation)
 - [Asynchronous validation rules](#asynchronous-validation-rules)
   - [Username availability checker](#example-username-availability-checker)
   - [Using async validation in forms](#using-async-validation-in-forms)
@@ -57,7 +64,7 @@ Add `form_shield` to your `pubspec.yaml` dependencies:
 dependencies:
   flutter:
     sdk: flutter
-  form_shield: ^0.3.0
+  form_shield: ^0.4.0
 ```
 
 Then, run `flutter pub get`.
@@ -289,18 +296,98 @@ Validator<String>([
 ])
 ```
 
-### Asynchronous validation rules
+## Validation architecture
+
+Form Shield offers three distinct validator classes to handle different validation scenarios:
+
+### Synchronous validation
+
+`Validator` handles synchronous validation with immediate results:
+
+```dart
+// Create a validator with synchronous rules
+final validator = Validator<String>([
+  RequiredRule(),
+  EmailRule(),
+]);
+
+// Use it directly as a FormField validator
+TextFormField(
+  validator: validator,
+)
+```
+
+### Asynchronous validation
+
+`AsyncValidator` is specifically for asynchronous validation needs:
+
+```dart
+// Create an async validator with async rules
+final asyncValidator = AsyncValidator<String>([
+  UsernameAvailabilityRule(
+    checkAvailability: (username) async {
+      // API call or database check
+      return await userRepository.isUsernameAvailable(username);
+    },
+  ),
+], debounceDuration: Duration(milliseconds: 500));
+
+// Don't forget to dispose
+@override
+void dispose() {
+  asyncValidator.dispose();
+  super.dispose();
+}
+```
+
+### Composed validation
+
+`ComposedValidator` combines both synchronous and asynchronous validators:
+
+```dart
+// Create sync and async validators
+final syncValidator = Validator<String>([
+  RequiredRule(),
+  MinLengthRule(3),
+  MaxLengthRule(20),
+]);
+
+final asyncValidator = AsyncValidator<String>([
+  UsernameAvailabilityRule(
+    checkAvailability: _checkUsernameAvailability,
+  ),
+]);
+
+// Compose them together
+final composedValidator = ComposedValidator<String>(
+  syncValidators: [syncValidator],
+  asyncValidators: [asyncValidator],
+);
+
+// Use in your form
+TextFormField(
+  validator: composedValidator,
+  // ...
+)
+
+// Clean up resources
+@override
+void dispose() {
+  composedValidator.dispose();
+  super.dispose();
+}
+```
+
+## Asynchronous validation rules
 
 Form Shield supports asynchronous validation for scenarios where validation requires network requests or other async operations (like checking username availability or email uniqueness).
 
-You can create async validation rules by either:
-1. Extending the `ValidationRule` class and overriding the `validateAsync` method
-2. Extending the specialized `AsyncValidationRule` class
+You can create async validation rules by extending the specialized `AsyncValidationRule` class:
 
 #### Example: Username availability checker
 
 ```dart
-class UsernameAvailabilityRule extends ValidationRule<String> {
+class UsernameAvailabilityRule extends AsyncValidationRule<String> {
   final Future<bool> Function(String username) _checkAvailability;
 
   const UsernameAvailabilityRule({
@@ -310,7 +397,7 @@ class UsernameAvailabilityRule extends ValidationRule<String> {
 
   @override
   ValidationResult validate(String? value) {
-    // Perform synchronous validation first
+    // Basic sync validation for null/empty check
     if (value == null || value.isEmpty) {
       return ValidationResult.error('Username cannot be empty');
     }
@@ -342,34 +429,40 @@ class UsernameAvailabilityRule extends ValidationRule<String> {
 
 #### Using async validation in forms
 
-When using async validation, you need to:
-1. Create a validator instance as a field in your state class
-2. Initialize it in `initState()`
-3. Dispose of it in `dispose()`
-4. Check both sync and async validation states before submitting
+When using async validation, use the `AsyncValidator` or `ComposedValidator` class:
 
 ```dart
 class _MyFormState extends State<MyForm> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
-  late final Validator<String> _usernameValidator;
+  late final AsyncValidator<String> _asyncValidator;
+  late final ComposedValidator<String> _composedValidator;
 
   @override
   void initState() {
     super.initState();
 
-    _usernameValidator = Validator<String>([
-      RequiredRule(),
+    _asyncValidator = AsyncValidator<String>([
       UsernameAvailabilityRule(
         checkAvailability: _checkUsernameAvailability,
       ),
     ], debounceDuration: Duration(milliseconds: 500));
+    
+    _composedValidator = ComposedValidator<String>(
+      syncValidators: [
+        Validator<String>([
+          RequiredRule(),
+          LengthRule(minLength: 3, maxLength: 20),
+        ]),
+      ],
+      asyncValidators: [_asyncValidator],
+    );
   }
 
   @override
   void dispose() {
     _usernameController.dispose();
-    _usernameValidator.dispose(); // Important to prevent memory leaks
+    _composedValidator.dispose(); // This will handle disposing the async validator
     super.dispose();
   }
 
@@ -382,8 +475,8 @@ class _MyFormState extends State<MyForm> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate() &&
-        !_usernameValidator.isValidating &&
-        _usernameValidator.isValid) {
+        !_composedValidator.isValidating &&
+        _composedValidator.isValid) {
       // All validations passed, proceed with form submission
     }
   }
@@ -397,20 +490,20 @@ class _MyFormState extends State<MyForm> {
           TextFormField(
             controller: _usernameController,
             decoration: InputDecoration(labelText: 'Username'),
-            validator: _usernameValidator,
+            validator: _composedValidator,
           ),
           // Show async validation state
-          ValueListenableBuilder<AsyncValidationStateData>(
-            valueListenable: _usernameValidator.asyncState,
-            builder: (context, state, _) {
-              if (state.isValidating) {
+          ListenableBuilder(
+            listenable: _asyncValidator.asyncState,
+            builder: (context, _) {
+              if (_composedValidator.isValidating) {
                 return Text('Checking username availability...');
-              } else if (state.isValid == false) {
+              } else if (!_composedValidator.isValid && _asyncValidator.errorMessage != null) {
                 return Text(
-                  state.errorMessage ?? 'Invalid username',
+                  _asyncValidator.errorMessage!,
                   style: TextStyle(color: Colors.red),
                 );
-              } else if (state.isValid == true) {
+              } else if (_composedValidator.isValid) {
                 return Text(
                   'Username is available',
                   style: TextStyle(color: Colors.green),
@@ -432,11 +525,10 @@ class _MyFormState extends State<MyForm> {
 
 #### Debouncing async validation
 
-Form Shield includes built-in debouncing for async validation to prevent excessive API calls during typing. You can customize the debounce duration:
+AsyncValidator includes built-in debouncing to prevent excessive API calls during typing. You can customize the debounce duration:
 
 ```dart
-Validator<String>([
-  RequiredRule(),
+AsyncValidator<String>([
   UsernameAvailabilityRule(checkAvailability: _checkUsername),
 ], debounceDuration: Duration(milliseconds: 800)) // Custom debounce time
 ```
@@ -447,7 +539,7 @@ You can manually trigger async validation using the `validateAsync` method:
 
 ```dart
 Future<void> _checkUsername() async {
-  final isValid = await _usernameValidator.validateAsync(
+  final isValid = await _asyncValidator.validateAsync(
     _usernameController.text,
     debounceDuration: Duration.zero, // Optional: skip debouncing
   );
