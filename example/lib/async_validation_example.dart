@@ -49,31 +49,37 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
-  late final Validator<String> _usernameValidator;
+
+  late final AsyncValidator<String> _asyncValidator;
+  late final ComposedValidator<String> _composedValidator;
 
   @override
   void initState() {
     super.initState();
 
-    _usernameValidator = Validator.forString([
-      const RequiredRule(errorMessage: 'Username is required'),
-      LengthRule(
-        minLength: 3,
-        maxLength: 20,
-        errorMessage: 'Username must be between 3 and 20 characters',
-      ),
+    _asyncValidator = AsyncValidator<String>([
       UsernameAvailabilityRule(
         checkAvailability: _checkUsernameAvailability,
         errorMessage: 'This username is already taken',
       ),
     ], debounceDuration: Duration(milliseconds: 500));
+
+    _composedValidator = ComposedValidator<String>(
+      syncValidators: [
+        Validator<String>([
+          const RequiredRule(errorMessage: 'Username is required'),
+          LengthRule(minLength: 3, maxLength: 20, errorMessage: 'Username must be between 3 and 20 characters'),
+        ]),
+      ],
+      asyncValidators: [_asyncValidator],
+    );
   }
 
   @override
   void dispose() {
     _usernameController.dispose();
     _emailController.dispose();
-    _usernameValidator.dispose();
+    _composedValidator.dispose();
     super.dispose();
   }
 
@@ -84,9 +90,7 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
   }
 
   void _submitForm() {
-    if (_formKey.currentState!.validate() &&
-        !_usernameValidator.isValidating &&
-        _usernameValidator.isValid) {
+    if (_formKey.currentState!.validate() && !_composedValidator.isValidating && _composedValidator.isValid) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Registration successful!'),
@@ -100,19 +104,14 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Unified Validation API Example'),
-        elevation: 0,
-      ),
+      appBar: AppBar(title: const Text('Separated Validation API Example'), elevation: 0),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(24.0),
             child: Card(
               elevation: 8,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Form(
@@ -125,10 +124,7 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                       const SizedBox(height: 16),
                       const Text(
                         'Create Account',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 24),
@@ -136,35 +132,24 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            'Username with Async Validation',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
+                            'Username with Separated Validation',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                           ),
                           const SizedBox(height: 4),
                           ListenableBuilder(
-                            listenable: _usernameValidator.asyncState,
+                            listenable: _asyncValidator.asyncState,
                             builder: (context, child) {
                               Widget? suffixIcon;
-                              if (_usernameValidator.isValidating) {
+                              if (_composedValidator.isValidating) {
                                 suffixIcon = const SizedBox(
                                   width: 20,
                                   height: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
+                                  child: CircularProgressIndicator(strokeWidth: 2),
                                 );
-                              } else if (_usernameValidator.isValid) {
-                                suffixIcon = const Icon(
-                                  Icons.check_circle,
-                                  color: Colors.green,
-                                );
-                              } else if (!_usernameValidator.isValid) {
-                                suffixIcon = const Icon(
-                                  Icons.error,
-                                  color: Colors.red,
-                                );
+                              } else if (_composedValidator.isValid) {
+                                suffixIcon = const Icon(Icons.check_circle, color: Colors.green);
+                              } else if (!_composedValidator.isValid) {
+                                suffixIcon = const Icon(Icons.error, color: Colors.red);
                               }
 
                               return TextFormField(
@@ -175,40 +160,23 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                                   prefixIcon: const Icon(Icons.person),
                                   suffixIcon:
                                       suffixIcon != null
-                                          ? Padding(
-                                            padding: const EdgeInsets.all(12.0),
-                                            child: suffixIcon,
-                                          )
+                                          ? Padding(padding: const EdgeInsets.all(12.0), child: suffixIcon)
                                           : null,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
+                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
                                     borderSide: const BorderSide(width: 2),
                                   ),
-                                  errorText: _usernameValidator.errorMessage,
-                                  errorStyle: const TextStyle(
-                                    color: Colors.red,
-                                  ),
+                                  errorText: _composedValidator.errorMessage,
+                                  errorStyle: const TextStyle(color: Colors.red),
                                 ),
                                 validator: (value) {
-                                  final syncResult = _usernameValidator.call(
-                                    value,
-                                  );
-                                  if (syncResult != null) return syncResult;
-
-                                  if (!_usernameValidator.isValid &&
-                                      !_usernameValidator.isValidating) {
-                                    return _usernameValidator.errorMessage;
-                                  }
-
-                                  return null;
+                                  return _composedValidator(value);
                                 },
                                 onChanged: (value) {
                                   if (value.length >= 3) {
                                     setState(() {
-                                      _usernameValidator(value);
+                                      _composedValidator(value);
                                     });
                                   }
                                 },
@@ -217,34 +185,25 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                           ),
                           const SizedBox(height: 8),
                           const Text(
-                            'The username field combines both sync and async validation rules in a single list.',
+                            'This example uses separate Validator for sync rules and AsyncValidator for async rules, composed together with ComposedValidator.',
                             style: TextStyle(fontSize: 12, color: Colors.grey),
                           ),
                         ],
                       ),
                       const SizedBox(height: 24),
                       ListenableBuilder(
-                        listenable: _usernameValidator.asyncState,
+                        listenable: _asyncValidator.asyncState,
                         builder: (context, _) {
                           return ElevatedButton(
-                            onPressed:
-                                _usernameValidator.isValidating
-                                    ? null
-                                    : _submitForm,
+                            onPressed: _composedValidator.isValidating ? null : _submitForm,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                               padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
                             child: const Text(
                               'Register',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                             ),
                           );
                         },

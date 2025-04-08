@@ -1,4 +1,6 @@
 export 'src/validator.dart';
+export 'src/async_validator.dart';
+export 'src/composed_validator.dart';
 export 'src/validation_rule.dart';
 export 'src/validation_result.dart';
 export 'src/async_validation_state.dart';
