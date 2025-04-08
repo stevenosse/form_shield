@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.0] - 2025-04-08
+### Added
+- Introduce `AsyncValidator` class for handling asynchronous validation
+- New `CompositeValidator` class for combining multiple validators (to offer an unified API for both sync and async validation)
+- Update readme with new async validation examples
+
 ## [0.3.0] - 2025-04-05
 ### Added
 - Asynchronous validation support:
