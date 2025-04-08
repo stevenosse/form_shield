@@ -4,15 +4,15 @@ import 'package:form_shield/form_shield.dart';
 ///
 /// This class allows chaining both synchronous validators and asynchronous validators,
 /// providing a unified API for form validation.
-class ComposedValidator<T> {
+class CompositeValidator<T> {
   /// The list of synchronous validators.
   final List<Validator<T>> _syncValidators;
 
   /// The list of asynchronous validators.
   final List<AsyncValidator<T>> _asyncValidators;
 
-  /// Creates a `ComposedValidator` with the provided lists of validators.
-  ComposedValidator({
+  /// Creates a `CompositeValidator` with the provided lists of validators.
+  CompositeValidator({
     List<Validator<T>> syncValidators = const [],
     List<AsyncValidator<T>> asyncValidators = const [],
   })  : _syncValidators = List.unmodifiable(syncValidators),

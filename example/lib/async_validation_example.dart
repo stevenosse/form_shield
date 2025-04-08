@@ -38,7 +38,7 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
   final _emailController = TextEditingController();
 
   late final AsyncValidator<String> _asyncValidator;
-  late final ComposedValidator<String> _composedValidator;
+  late final CompositeValidator<String> _compositeValidator;
 
   @override
   void initState() {
@@ -48,7 +48,7 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
       UsernameAvailabilityRule(checkAvailability: _checkUsernameAvailability),
     ], debounceDuration: Duration(milliseconds: 100));
 
-    _composedValidator = ComposedValidator<String>(
+    _compositeValidator = CompositeValidator<String>(
       syncValidators: [
         Validator<String>([
           const RequiredRule(errorMessage: 'Username is required'),
@@ -63,7 +63,7 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
   void dispose() {
     _usernameController.dispose();
     _emailController.dispose();
-    _composedValidator.dispose();
+    _compositeValidator.dispose();
     super.dispose();
   }
 
@@ -74,7 +74,7 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
   }
 
   void _submitForm() {
-    if (_formKey.currentState!.validate() && !_composedValidator.isValidating && _composedValidator.isValid) {
+    if (_formKey.currentState!.validate() && !_compositeValidator.isValidating && _compositeValidator.isValid) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Registration successful!'),
@@ -88,7 +88,7 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Composed + async validation'), elevation: 0),
+      appBar: AppBar(title: const Text('Composite + async validation'), elevation: 0),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -122,15 +122,15 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                             listenable: _asyncValidator.asyncState,
                             builder: (context, child) {
                               Widget? suffixIcon;
-                              if (_composedValidator.isValidating) {
+                              if (_compositeValidator.isValidating) {
                                 suffixIcon = const SizedBox(
                                   width: 20,
                                   height: 20,
                                   child: CircularProgressIndicator(strokeWidth: 2),
                                 );
-                              } else if (_composedValidator.isValid) {
+                              } else if (_compositeValidator.isValid) {
                                 suffixIcon = const Icon(Icons.check_circle, color: Colors.green);
-                              } else if (!_composedValidator.isValid) {
+                              } else if (!_compositeValidator.isValid) {
                                 suffixIcon = const Icon(Icons.error, color: Colors.red);
                               }
                               return TextFormField(
@@ -147,14 +147,14 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                                     borderRadius: BorderRadius.circular(12),
                                     borderSide: const BorderSide(width: 2),
                                   ),
-                                  errorText: _composedValidator.errorMessage,
+                                  errorText: _compositeValidator.errorMessage,
                                   errorStyle: const TextStyle(color: Colors.red),
                                 ),
-                                validator: _composedValidator.call,
+                                validator: _compositeValidator.call,
                                 onChanged: (value) {
                                   setState(() {
                                     if (value.length >= 3) {
-                                      _composedValidator(value);
+                                      _compositeValidator(value);
                                     } 
                                   });
                                 },
@@ -163,7 +163,7 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                           ),
                           const SizedBox(height: 8),
                           const Text(
-                            'This example uses separate Validator for sync rules and AsyncValidator for async rules, composed together with ComposedValidator.',
+                            'This example uses separate Validator for sync rules and AsyncValidator for async rules, composed together with CompositeValidator.',
                             style: TextStyle(fontSize: 12, color: Colors.grey),
                           ),
                         ],
@@ -173,7 +173,7 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                         listenable: _asyncValidator.asyncState,
                         builder: (context, _) {
                           return ElevatedButton(
-                            onPressed: _composedValidator.isValidating ? null : _submitForm,
+                            onPressed: _compositeValidator.isValidating ? null : _submitForm,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                               padding: const EdgeInsets.symmetric(vertical: 16),

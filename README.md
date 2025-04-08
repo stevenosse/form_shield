@@ -25,7 +25,7 @@ It provides a simple yet powerful way to define and apply validation logic to yo
 📚 **Comprehensive Built-in Rules:** Includes common validation scenarios out-of-the-box (required, email, password, length, numeric range, phone, etc.). <br />
 🛠️ **Extensible:** Create your own custom validation rules by extending the base class. <br />
 🔄 **Separate Sync/Async APIs:** Clearly separated APIs for synchronous and asynchronous validation needs. <br />
-🧩 **Composable Validators:** Combine multiple validators with the `ComposedValidator`. <br />
+🧩 **Composable Validators:** Combine multiple validators with the `CompositeValidator`. <br />
 
 ## Table of Contents
 - [Installation](#getting-started)
@@ -45,7 +45,7 @@ It provides a simple yet powerful way to define and apply validation logic to yo
 - [Validation vrchitecture](#validation-architecture)
   - [Synchronous validation](#synchronous-validation)
   - [Asynchronous validation](#asynchronous-validation)
-  - [Composed validation](#composed-validation)
+  - [Compose validators](#composite-validation)
 - [Asynchronous validation rules](#asynchronous-validation-rules)
   - [Username availability checker](#example-username-availability-checker)
   - [Using async validation in forms](#using-async-validation-in-forms)
@@ -340,9 +340,9 @@ void dispose() {
 }
 ```
 
-### Composed validation
+### Composite validation
 
-`ComposedValidator` combines both synchronous and asynchronous validators:
+`CompositeValidator` combines both synchronous and asynchronous validators:
 
 ```dart
 // Create sync and async validators
@@ -359,21 +359,21 @@ final asyncValidator = AsyncValidator<String>([
 ]);
 
 // Compose them together
-final composedValidator = ComposedValidator<String>(
+final compositeValidator = CompositeValidator<String>(
   syncValidators: [syncValidator],
   asyncValidators: [asyncValidator],
 );
 
 // Use in your form
 TextFormField(
-  validator: composedValidator,
+  validator: compositeValidator,
   // ...
 )
 
 // Clean up resources
 @override
 void dispose() {
-  composedValidator.dispose();
+  compositeValidator.dispose();
   super.dispose();
 }
 ```
@@ -429,14 +429,14 @@ class UsernameAvailabilityRule extends AsyncValidationRule<String> {
 
 #### Using async validation in forms
 
-When using async validation, use the `AsyncValidator` or `ComposedValidator` class:
+When using async validation, use the `AsyncValidator` or `CompositeValidator` class:
 
 ```dart
 class _MyFormState extends State<MyForm> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   late final AsyncValidator<String> _asyncValidator;
-  late final ComposedValidator<String> _composedValidator;
+  late final CompositeValidator<String> _compositeValidator;
 
   @override
   void initState() {
@@ -448,7 +448,7 @@ class _MyFormState extends State<MyForm> {
       ),
     ], debounceDuration: Duration(milliseconds: 500));
     
-    _composedValidator = ComposedValidator<String>(
+    _compositeValidator = CompositeValidator<String>(
       syncValidators: [
         Validator<String>([
           RequiredRule(),
@@ -462,7 +462,7 @@ class _MyFormState extends State<MyForm> {
   @override
   void dispose() {
     _usernameController.dispose();
-    _composedValidator.dispose(); // This will handle disposing the async validator
+    _compositeValidator.dispose(); // This will handle disposing the async validator
     super.dispose();
   }
 
@@ -475,8 +475,8 @@ class _MyFormState extends State<MyForm> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate() &&
-        !_composedValidator.isValidating &&
-        _composedValidator.isValid) {
+        !_compositeValidator.isValidating &&
+        _compositeValidator.isValid) {
       // All validations passed, proceed with form submission
     }
   }
@@ -490,20 +490,20 @@ class _MyFormState extends State<MyForm> {
           TextFormField(
             controller: _usernameController,
             decoration: InputDecoration(labelText: 'Username'),
-            validator: _composedValidator,
+            validator: _compositeValidator,
           ),
           // Show async validation state
           ListenableBuilder(
             listenable: _asyncValidator.asyncState,
             builder: (context, _) {
-              if (_composedValidator.isValidating) {
+              if (_compositeValidator.isValidating) {
                 return Text('Checking username availability...');
-              } else if (!_composedValidator.isValid && _asyncValidator.errorMessage != null) {
+              } else if (!_compositeValidator.isValid && _asyncValidator.errorMessage != null) {
                 return Text(
                   _asyncValidator.errorMessage!,
                   style: TextStyle(color: Colors.red),
                 );
-              } else if (_composedValidator.isValid) {
+              } else if (_compositeValidator.isValid) {
                 return Text(
                   'Username is available',
                   style: TextStyle(color: Colors.green),
@@ -559,14 +559,14 @@ You can use the `ListenableBuilder` widget to listen to the async validation sta
 ListenableBuilder(
   listenable: _asyncValidator.asyncState,
   builder: (context, _) {
-    if (_composedValidator.isValidating) {
+    if (_compositeValidator.isValidating) {
       return Text('Checking username availability...');
-    } else if (!_composedValidator.isValid && _asyncValidator.errorMessage != null) {
+    } else if (!_compositeValidator.isValid && _asyncValidator.errorMessage != null) {
       return Text(
         _asyncValidator.errorMessage!,
         style: TextStyle(color: Colors.red),
       );
-    } else if (_composedValidator.isValid) {
+    } else if (_compositeValidator.isValid) {
       return Text(
         'Username is available',
         style: TextStyle(color: Colors.green),

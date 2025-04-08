@@ -41,7 +41,7 @@ class MockAsyncValidationRule<T> extends AsyncValidationRule<T> {
 }
 
 void main() {
-  group('ComposedValidator', () {
+  group('CompositeValidator', () {
     late Validator<String> syncValidatorPass;
     late Validator<String> syncValidatorFail;
     late AsyncValidator<String> asyncValidatorPass;
@@ -69,65 +69,65 @@ void main() {
       ]);
     });
 
-    test('constructor creates a composed validator with provided validators',
+    test('constructor creates a composite validator with provided validators',
         () {
-      final composedValidator = ComposedValidator<String>(
+      final compositeValidator = CompositeValidator<String>(
         syncValidators: [syncValidatorPass],
         asyncValidators: [asyncValidatorPass],
       );
 
-      expect(composedValidator.isValidating, false);
-      expect(composedValidator.isValid, false);
-      expect(composedValidator.errorMessage, null);
+      expect(compositeValidator.isValidating, false);
+      expect(compositeValidator.isValid, false);
+      expect(compositeValidator.errorMessage, null);
     });
 
     test('call returns sync validation errors first', () {
-      final composedValidator = ComposedValidator<String>(
+      final compositeValidator = CompositeValidator<String>(
         syncValidators: [syncValidatorFail],
         asyncValidators: [asyncValidatorPass],
       );
 
-      expect(composedValidator('test'), 'Sync Error Fail');
-      expect(composedValidator.errorMessage, 'Sync Error Fail');
+      expect(compositeValidator('test'), 'Sync Error Fail');
+      expect(compositeValidator.errorMessage, 'Sync Error Fail');
     });
 
     testWidgets('call triggers async validation when sync validation passes',
         (WidgetTester tester) async {
-      final composedValidator = ComposedValidator<String>(
+      final compositeValidator = CompositeValidator<String>(
         syncValidators: [syncValidatorPass],
         asyncValidators: [asyncValidatorFail],
       );
 
-      expect(composedValidator('test'), null);
-      expect(composedValidator.isValidating, true);
+      expect(compositeValidator('test'), null);
+      expect(compositeValidator.isValidating, true);
 
       await tester.pump(const Duration(milliseconds: 350));
       await tester.pumpAndSettle();
 
-      expect(composedValidator.errorMessage, 'Async Error Fail');
-      expect(composedValidator.isValidating, false);
-      expect(composedValidator.isValid, false);
+      expect(compositeValidator.errorMessage, 'Async Error Fail');
+      expect(compositeValidator.isValidating, false);
+      expect(compositeValidator.isValid, false);
     });
 
     test('validateAsync runs all async validations and returns combined result',
         () async {
-      final composedValidator = ComposedValidator<String>(
+      final compositeValidator = CompositeValidator<String>(
         syncValidators: [syncValidatorPass],
         asyncValidators: [asyncValidatorPass],
       );
 
-      final result = await composedValidator.validateAsync('test');
+      final result = await compositeValidator.validateAsync('test');
       expect(result, true);
-      expect(composedValidator.isValid, true);
+      expect(compositeValidator.isValid, true);
 
-      final composedValidatorWithFail = ComposedValidator<String>(
+      final compositeValidatorWithFail = CompositeValidator<String>(
         syncValidators: [syncValidatorPass],
         asyncValidators: [asyncValidatorPass, asyncValidatorFail],
       );
 
-      final failResult = await composedValidatorWithFail.validateAsync('test');
+      final failResult = await compositeValidatorWithFail.validateAsync('test');
       expect(failResult, false);
-      expect(composedValidatorWithFail.isValid, false);
+      expect(compositeValidatorWithFail.isValid, false);
     });
 
     testWidgets(
@@ -143,25 +143,25 @@ void main() {
             shouldPass: false, errorMessage: 'Sync Error 2')
       ]);
 
-      final composedValidator = ComposedValidator<String>(
+      final compositeValidator = CompositeValidator<String>(
         syncValidators: [syncValidator1, syncValidator2],
         asyncValidators: [asyncValidatorFail],
       );
 
-      composedValidator('test');
-      expect(composedValidator.errorMessage, 'Sync Error 2');
+      compositeValidator('test');
+      expect(compositeValidator.errorMessage, 'Sync Error 2');
 
       // If no sync errors, should show async errors
-      final composedValidator2 = ComposedValidator<String>(
+      final compositeValidator2 = CompositeValidator<String>(
         syncValidators: [syncValidator1],
         asyncValidators: [asyncValidatorFail],
       );
 
-      composedValidator2('test');
+      compositeValidator2('test');
 
       await tester.pumpAndSettle(const Duration(milliseconds: 350));
 
-      expect(composedValidator2.errorMessage, 'Async Error Fail');
+      expect(compositeValidator2.errorMessage, 'Async Error Fail');
     });
 
     test('dispose calls dispose on all async validators', () {
@@ -175,7 +175,7 @@ void main() {
             shouldPass: true, errorMessage: 'Error 2')
       ]);
 
-      final composedValidator = ComposedValidator<String>(
+      final compositeValidator = CompositeValidator<String>(
         syncValidators: [syncValidatorPass],
         asyncValidators: [mockAsyncValidator1, mockAsyncValidator2],
       );
@@ -185,7 +185,7 @@ void main() {
       mockAsyncValidator2.validate('test');
 
       // This should not throw exceptions
-      expect(() => composedValidator.dispose(), returnsNormally);
+      expect(() => compositeValidator.dispose(), returnsNormally);
     });
   });
 }
