@@ -44,6 +44,7 @@ void main() {
           'email@example@example.com',
           'email@example.com (Joe Smith)',
           'email@example..com',
+          'email@example'
         ];
 
         for (final email in invalidEmails) {

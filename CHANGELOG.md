@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.1] - 2025-04-14
+### Fixed
+- Fix regex pattern for email validation to correctly handle multiple domains
+
 ## [0.4.0] - 2025-04-08
 ### Added
 - Introduce `AsyncValidator` class for handling asynchronous validation

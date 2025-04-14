@@ -1,6 +1,6 @@
 name: form_shield
 description: A declarative, rule-based form validation library for Flutter apps. Supports async validation, custom validation logic, and more.
-version: 0.4.0
+version: 0.4.1
 homepage: https://github.com/stevenosse/form_shield
 issue_tracker: https://github.com/stevenosse/form_shield/issues
 
