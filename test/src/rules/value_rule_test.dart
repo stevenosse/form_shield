@@ -146,4 +146,43 @@ void main() {
       expect(rule.validate(13).isValid, false);
     });
   });
+
+  group('FormInputValueRule', () {
+    group('constructor', () {
+      test('creates a ValueRule with only minValue set', () {
+        final rule = FormInputMinValueRule(
+          minValue: 5,
+          convert: (value) => num.parse(value),
+        );
+
+        expect(rule.minValue, 5);
+        expect(rule.maxValue, null);
+        expect(rule.errorMessage, 'Value must be at least 5');
+      });
+
+      test('creates a ValueRule with only maxValue set', () {
+        final rule = FormInputMaxValueRule(
+          maxValue: 10,
+          convert: (value) => num.parse(value),
+        );
+
+        expect(rule.minValue, null);
+        expect(rule.maxValue, 10);
+        expect(rule.errorMessage, 'Value must be at most 10');
+      });
+
+      test('creates a ValueRule with both minValue and maxValue set', () {
+        final rule = FormInputValueRule(
+          minValue: 5,
+          maxValue: 10,
+          convert: (value) => num.parse(value),
+          errorMessage: 'Value must be between 5 and 10',
+        );
+
+        expect(rule.minValue, 5);
+        expect(rule.maxValue, 10);
+        expect(rule.errorMessage, 'Value must be between 5 and 10');
+      });
+    });
+  });
 }

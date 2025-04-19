@@ -57,5 +57,32 @@ void main() {
       expect(result.isValid, false);
       expect(result.errorMessage, errorMessage);
     });
+
+    test('async validate returns success result when validation passes',
+        () async {
+      final rule = TestValidationRule(
+        shouldPass: true,
+        errorMessage: errorMessage,
+      );
+
+      final result = await rule.validateAsync('test');
+
+      expect(result.isValid, true);
+      expect(result.errorMessage, null);
+    });
+
+    test(
+        'async validate returns error result with correct message when validation fails',
+        () async {
+      final rule = TestValidationRule(
+        shouldPass: false,
+        errorMessage: errorMessage,
+      );
+
+      final result = await rule.validateAsync('test');
+
+      expect(result.isValid, false);
+      expect(result.errorMessage, errorMessage);
+    });
   });
 }

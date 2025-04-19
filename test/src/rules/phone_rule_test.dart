@@ -80,4 +80,22 @@ void main() {
       });
     });
   });
+
+  group('CountryPhoneRule', () {
+    const defaultErrorMessage = 'Please enter a valid phone number';
+    const customErrorMessage = 'Custom error message';
+
+    test('constructor sets default error message when not provided', () {
+      final rule = CountryPhoneRule(countryCode: 'CM');
+      expect(rule.errorMessage, defaultErrorMessage);
+    });
+
+    test('constructor sets custom error message when provided', () {
+      final rule = CountryPhoneRule(
+        countryCode: 'CM',
+        errorMessage: customErrorMessage,
+      );
+      expect(rule.errorMessage, customErrorMessage);
+    });
+  });
 }

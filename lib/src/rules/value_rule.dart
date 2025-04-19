@@ -70,3 +70,57 @@ class MaxValueRule extends ValueRule {
           maxValue: maxValue,
         );
 }
+
+/// Validates that a numeric value is at least a specified minimum.
+/// Works with form inputs.
+class FormInputValueRule extends ValidationRule<String> {
+  final num? minValue;
+  final num? maxValue;
+  final num Function(String) convert;
+
+  FormInputValueRule({
+    required super.errorMessage,
+    this.minValue,
+    this.maxValue,
+    required this.convert,
+  });
+
+  @override
+  ValidationResult validate(String? value) {
+    if (value == null) {
+      return const ValidationResult.success();
+    }
+
+    num parsedValue = convert(value);
+
+    if (minValue != null && parsedValue < minValue!) {
+      return ValidationResult.error(errorMessage);
+    }
+
+    if (maxValue != null && parsedValue > maxValue!) {
+      return ValidationResult.error(errorMessage);
+    }
+
+    return const ValidationResult.success();
+  }
+}
+
+/// Validates that a numeric value is at least a specified minimum.
+/// Works with form inputs.
+class FormInputMinValueRule extends FormInputValueRule {
+  /// Creates a minimum value validation rule.
+  FormInputMinValueRule({
+    required super.minValue,
+    required super.convert,
+  }) : super(errorMessage: 'Value must be at least $minValue');
+}
+
+/// Validates that a numeric value is at most a specified maximum.
+/// Works with form inputs.
+class FormInputMaxValueRule extends FormInputValueRule {
+  /// Creates a maximum value validation rule.
+  FormInputMaxValueRule({
+    required super.maxValue,
+    required super.convert,
+  }) : super(errorMessage: 'Value must be at most $maxValue');
+}

@@ -177,4 +177,36 @@ void main() {
       });
     });
   });
+
+  group('PasswordMatchRule', () {
+    const defaultErrorMessage = 'Passwords do not match';
+    const customErrorMessage = 'Custom error message';
+
+    test('constructor sets default error message when not provided', () {
+      final rule = PasswordMatchRule(passwordGetter: () => 'test');
+      expect(rule.errorMessage, defaultErrorMessage);
+    });
+
+    test('constructor sets custom error message when provided', () {
+      final rule = PasswordMatchRule(
+          passwordGetter: () => 'test', errorMessage: customErrorMessage);
+      expect(rule.errorMessage, customErrorMessage);
+    });
+
+    test('returns success when passwords match', () {
+      final rule = PasswordMatchRule(passwordGetter: () => 'test');
+      final result = rule.validate('test');
+
+      expect(result.isValid, true);
+      expect(result.errorMessage, null);
+    });
+
+    test('returns error when passwords do not match', () {
+      final rule = PasswordMatchRule(passwordGetter: () => 'test');
+      final result = rule.validate('other');
+
+      expect(result.isValid, false);
+      expect(result.errorMessage, contains('match'));
+    });
+  });
 }

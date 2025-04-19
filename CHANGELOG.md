@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0] - 2025-04-19
+### Added
+- Introduce `FormInputValueRule` for validating numeric values with min and max constraints. The main difference with `ValueRule` is that it works with form inputs (hence accepts `String?` as value).
+
+### Changed
+- Update documentation
+
 ## [0.4.1] - 2025-04-14
 ### Fixed
 - Fix regex pattern for email validation to correctly handle multiple domains

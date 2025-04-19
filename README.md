@@ -17,15 +17,15 @@ It provides a simple yet powerful way to define and apply validation logic to yo
 
 ## Features
 
-✨ **Declarative Validation:** Define validation rules in a clear, readable way. <br />
+✨ **Declarative validation:** Define validation rules in a clear, readable way. <br />
 🎨 **Customizable:** Easily tailor rules and error messages to your needs.<br />
-🤝 **Flutter Integration:** Works seamlessly with Flutter's `Form` and `TextFormField` widgets. <br />
-🔒 **Type-Safe:** Leverages Dart's type system for safer validation logic. <br />
-🔗 **Chainable Rules:** Combine multiple validation rules effortlessly. <br />
-📚 **Comprehensive Built-in Rules:** Includes common validation scenarios out-of-the-box (required, email, password, length, numeric range, phone, etc.). <br />
+🤝 **Flutter integration:** Works seamlessly with Flutter's `Form` and `TextFormField` widgets. <br />
+🔒 **Type-safe:** Leverages Dart's type system for safer validation logic. <br />
+🔗 **Chainable rules:** Combine multiple validation rules effortlessly. <br />
+📚 **Comprehensive built-in rules:** Includes common validation scenarios out-of-the-box (required, email, password, length, numeric range, phone, etc.). <br />
 🛠️ **Extensible:** Create your own custom validation rules by extending the base class. <br />
-🔄 **Separate Sync/Async APIs:** Clearly separated APIs for synchronous and asynchronous validation needs. <br />
-🧩 **Composable Validators:** Combine multiple validators with the `CompositeValidator`. <br />
+🔄 **Separate sync/async APIs:** Clearly separated APIs for synchronous and asynchronous validation needs. <br />
+🧩 **Composable validators:** Combine multiple validators with the `CompositeValidator`. <br />
 
 ## Table of Contents
 - [Installation](#getting-started)
@@ -64,7 +64,7 @@ Add `form_shield` to your `pubspec.yaml` dependencies:
 dependencies:
   flutter:
     sdk: flutter
-  form_shield: ^0.4.0
+  form_shield: ^0.5.0
 ```
 
 Then, run `flutter pub get`.
