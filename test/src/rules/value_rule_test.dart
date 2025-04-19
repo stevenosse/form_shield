@@ -183,6 +183,18 @@ void main() {
         expect(rule.maxValue, 10);
         expect(rule.errorMessage, 'Value must be between 5 and 10');
       });
+
+      test('constructor sets custom error message when provided', () {
+        const customMessage = 'Custom error message';
+        final rule = FormInputValueRule(
+          minValue: 5,
+          maxValue: 10,
+          convert: (value) => num.parse(value),
+          errorMessage: customMessage,
+        );
+
+        expect(rule.errorMessage, customMessage);
+      });
     });
   });
 }
