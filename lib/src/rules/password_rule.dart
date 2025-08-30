@@ -18,6 +18,21 @@ class PasswordOptions {
   /// Whether to require at least one special character.
   final bool requireSpecialChar;
 
+  /// Custom error message for minimum length validation.
+  final String? minLengthMessage;
+
+  /// Custom error message for uppercase letter requirement.
+  final String? uppercaseMessage;
+
+  /// Custom error message for lowercase letter requirement.
+  final String? lowercaseMessage;
+
+  /// Custom error message for digit requirement.
+  final String? digitMessage;
+
+  /// Custom error message for special character requirement.
+  final String? specialCharMessage;
+
   /// Creates password validation options.
   const PasswordOptions({
     this.minLength = 8,
@@ -25,6 +40,11 @@ class PasswordOptions {
     this.requireLowercase = true,
     this.requireDigit = true,
     this.requireSpecialChar = true,
+    this.minLengthMessage,
+    this.uppercaseMessage,
+    this.lowercaseMessage,
+    this.digitMessage,
+    this.specialCharMessage,
   });
 }
 
@@ -48,25 +68,29 @@ class PasswordRule extends ValidationRule<String> {
     final List<String> errors = [];
 
     if (value.length < options.minLength) {
-      errors.add(
+      errors.add(options.minLengthMessage ??
           'Password must be at least ${options.minLength} characters long');
     }
 
     if (options.requireUppercase && !value.contains(RegExp(r'[A-Z]'))) {
-      errors.add('Password must contain at least one uppercase letter');
+      errors.add(options.uppercaseMessage ??
+          'Password must contain at least one uppercase letter');
     }
 
     if (options.requireLowercase && !value.contains(RegExp(r'[a-z]'))) {
-      errors.add('Password must contain at least one lowercase letter');
+      errors.add(options.lowercaseMessage ??
+          'Password must contain at least one lowercase letter');
     }
 
     if (options.requireDigit && !value.contains(RegExp(r'[0-9]'))) {
-      errors.add('Password must contain at least one digit');
+      errors.add(
+          options.digitMessage ?? 'Password must contain at least one digit');
     }
 
     if (options.requireSpecialChar &&
         !value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-      errors.add('Password must contain at least one special character');
+      errors.add(options.specialCharMessage ??
+          'Password must contain at least one special character');
     }
 
     if (errors.isNotEmpty) {

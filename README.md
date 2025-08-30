@@ -215,6 +215,29 @@ Validator<String>([
 ])
 ```
 
+### Password validation with custom error messages
+
+```dart
+Validator<String>([
+  RequiredRule(),
+  PasswordRule(
+    options: PasswordOptions(
+      minLength: 12,
+      requireUppercase: true,
+      requireLowercase: true,
+      requireDigit: true,
+      requireSpecialChar: true,
+      // Custom error messages for each validation type
+      minLengthMessage: 'Password must be at least 12 characters long',
+      uppercaseMessage: 'Password must include an uppercase letter (A-Z)',
+      lowercaseMessage: 'Password must include a lowercase letter (a-z)',
+      digitMessage: 'Password must include at least one number (0-9)',
+      specialCharMessage: 'Password must include a special character (!@#$%^&*)',
+    ),
+  ),
+])
+```
+
 ### Password confirmation
 
 ```dart
