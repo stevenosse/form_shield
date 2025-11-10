@@ -49,7 +49,7 @@ void main() {
       test('returns error when date is before minDate', () {
         final minDate = DateTime(2023, 1, 1);
         final rule = DateRule(minDate: minDate);
-        final result = rule.validate(DateTime(2022, 12, 31));
+        final result = rule.validate('2022-12-31');
 
         expect(result.isValid, false);
         expect(result.errorMessage, 'Date must be on or after 2023-01-01');
@@ -58,7 +58,7 @@ void main() {
       test('returns error when date is after maxDate', () {
         final maxDate = DateTime(2023, 12, 31);
         final rule = DateRule(maxDate: maxDate);
-        final result = rule.validate(DateTime(2024, 1, 1));
+        final result = rule.validate('2024-01-01');
 
         expect(result.isValid, false);
         expect(result.errorMessage, 'Date must be on or before 2023-12-31');
@@ -69,13 +69,12 @@ void main() {
           minDate: DateTime(2023, 1, 1),
           maxDate: DateTime(2023, 12, 31),
         );
-
-        final resultBefore = rule.validate(DateTime(2022, 12, 31));
+        final resultBefore = rule.validate('2022-12-31');
         expect(resultBefore.isValid, false);
         expect(resultBefore.errorMessage,
             'Date must be between 2023-01-01 and 2023-12-31');
 
-        final resultAfter = rule.validate(DateTime(2024, 1, 1));
+        final resultAfter = rule.validate('2024-01-01');
         expect(resultAfter.isValid, false);
         expect(resultAfter.errorMessage,
             'Date must be between 2023-01-01 and 2023-12-31');
@@ -87,22 +86,22 @@ void main() {
           maxDate: DateTime(2023, 12, 31),
         );
 
-        final resultMin = rule.validate(DateTime(2023, 1, 1));
+        final resultMin = rule.validate('2023-01-01');
         expect(resultMin.isValid, true);
         expect(resultMin.errorMessage, null);
 
-        final resultMiddle = rule.validate(DateTime(2023, 6, 15));
+        final resultMiddle = rule.validate('2023-06-15');
         expect(resultMiddle.isValid, true);
         expect(resultMiddle.errorMessage, null);
 
-        final resultMax = rule.validate(DateTime(2023, 12, 31));
+        final resultMax = rule.validate('2023-12-31');
         expect(resultMax.isValid, true);
         expect(resultMax.errorMessage, null);
       });
 
       test('returns success when no limits are set', () {
         final rule = DateRule();
-        final result = rule.validate(DateTime(2023, 6, 15));
+        final result = rule.validate('2023-06-15');
 
         expect(result.isValid, true);
         expect(result.errorMessage, null);

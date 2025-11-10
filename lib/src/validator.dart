@@ -15,22 +15,6 @@ class Validator<T> {
       : _rules = List.unmodifiable(rules),
         _syncErrorMessage = null;
 
-  static Validator<String> forString(List<ValidationRule<String>> rules) {
-    return Validator<String>(rules);
-  }
-
-  static Validator<num> forNumber(List<ValidationRule<num>> rules) {
-    return Validator<num>(rules);
-  }
-
-  static Validator<bool> forBoolean(List<ValidationRule<bool>> rules) {
-    return Validator<bool>(rules);
-  }
-
-  static Validator<DateTime> forDate(List<ValidationRule<DateTime>> rules) {
-    return Validator<DateTime>(rules);
-  }
-
   /// Creates a new `Validator` instance by adding the provided [rule]
   /// to the existing list of rules.
   Validator<T> addRule(ValidationRule<T> rule) {
@@ -58,3 +42,10 @@ class Validator<T> {
     return null;
   }
 }
+
+/// Convenience helper to create a `Validator` from a list of rules.
+///
+/// This provides a terser API so you can write `validator([RequiredRule(), EmailRule()])`
+/// instead of `Validator<String>([RequiredRule(), EmailRule()])`.
+/// It returns a `Validator<T>` which is directly usable as a Flutter `FormFieldValidator`.
+Validator<T> validator<T>(List<ValidationRule<T>> rules) => Validator<T>(rules);

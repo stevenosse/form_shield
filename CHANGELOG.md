@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.7.0] - 2025-11-10
+### Added
+- Top-level `validator([])` helper for concise validator creation.
+
+### Changed
+- Documentation examples updated to prefer `validator([])` for brevity.
+- Migrate date-related APIs to operate on `String` inputs:
+  - `DateRule` now validates date strings (parsing with `DateTime.tryParse`).
+  - `DateRangeRule` now compares start/end date strings (parsing internally).
+  - Updated tests and README examples accordingly.
+
+### Deprecated
+- Direct constructor `Validator([...])` in favor of `validator([])`.
+
+### Removed
+- Removed `Validator.forString`, `Validator.forNumber`, `Validator.forBoolean`, and `Validator.forDate`. Use the top-level `validator([])` helper instead.
+- Removed `AsyncValidator.forString`, `AsyncValidator.forNumber`, `AsyncValidator.forBoolean`, and `AsyncValidator.forDate`. Use the `AsyncValidator<T>([rules])` constructor instead.
+
+## [0.6.2] - 2025-11-10
+
 ## [0.6.1]
 
 ### Changed

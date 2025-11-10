@@ -118,41 +118,41 @@ void main() {
       expect(() => validator.dispose(), returnsNormally);
     });
 
-    group('AsyncValidatorExtensions', () {
-      test('forString creates a string async validator', () {
+    group('AsyncValidator creation', () {
+      test('constructor creates a string async validator', () {
         final rule = MockAsyncValidationRule<String>(
             shouldPass: false, errorMessage: 'Error');
 
-        final validator = AsyncValidator.forString([rule]);
+        final validator = AsyncValidator<String>([rule]);
 
         expect(validator, isA<AsyncValidator<String>>());
       });
 
-      test('forNumber creates a number async validator', () {
+      test('constructor creates a number async validator', () {
         final rule = MockAsyncValidationRule<num>(
             shouldPass: false, errorMessage: 'Error');
 
-        final validator = AsyncValidator.forNumber([rule]);
+        final validator = AsyncValidator<num>([rule]);
 
         expect(validator, isA<AsyncValidator<num>>());
       });
 
-      test('forBoolean creates a boolean async validator', () {
+      test('constructor creates a boolean async validator', () {
         final rule = MockAsyncValidationRule<bool>(
             shouldPass: false, errorMessage: 'Error');
 
-        final validator = AsyncValidator.forBoolean([rule]);
+        final validator = AsyncValidator<bool>([rule]);
 
         expect(validator, isA<AsyncValidator<bool>>());
       });
 
-      test('forDate creates a date async validator', () {
-        final rule = MockAsyncValidationRule<DateTime>(
+      test('constructor creates a date async validator (string input)', () {
+        final rule = MockAsyncValidationRule<String>(
             shouldPass: false, errorMessage: 'Error');
 
-        final validator = AsyncValidator.forDate([rule]);
+        final validator = AsyncValidator<String>([rule]);
 
-        expect(validator, isA<AsyncValidator<DateTime>>());
+        expect(validator, isA<AsyncValidator<String>>());
       });
     });
   });

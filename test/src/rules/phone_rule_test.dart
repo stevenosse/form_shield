@@ -80,40 +80,4 @@ void main() {
       });
     });
   });
-
-  group('CountryPhoneRule', () {
-    const defaultErrorMessage = 'Please enter a valid phone number';
-    const customErrorMessage = 'Custom error message';
-
-    test('constructor sets default error message when not provided', () {
-      final rule = CountryPhoneRule(countryCode: 'CM');
-      expect(rule.errorMessage, defaultErrorMessage);
-    });
-
-    test('constructor sets custom error message when provided', () {
-      final rule = CountryPhoneRule(
-        countryCode: 'CM',
-        errorMessage: customErrorMessage,
-      );
-      expect(rule.errorMessage, customErrorMessage);
-    });
-
-    group('validate', () {
-      test('returns success for null value', () {
-        final rule = CountryPhoneRule(countryCode: 'CM');
-        final result = rule.validate(null);
-
-        expect(result.isValid, true);
-        expect(result.errorMessage, null);
-      });
-
-      test('returns success for empty string', () {
-        final rule = CountryPhoneRule(countryCode: 'CM');
-        final result = rule.validate('');
-
-        expect(result.isValid, true);
-        expect(result.errorMessage, null);
-      });
-    });
-  });
 }

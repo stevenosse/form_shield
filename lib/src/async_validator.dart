@@ -27,34 +27,6 @@ class AsyncValidator<T> {
         _asyncState = AsyncValidationState(),
         _debounceDuration = debounceDuration;
 
-  static AsyncValidator<String> forString(
-    List<ValidationRule<String>> rules, {
-    Duration debounceDuration = const Duration(milliseconds: 300),
-  }) {
-    return AsyncValidator<String>(rules, debounceDuration: debounceDuration);
-  }
-
-  static AsyncValidator<num> forNumber(
-    List<ValidationRule<num>> rules, {
-    Duration debounceDuration = const Duration(milliseconds: 300),
-  }) {
-    return AsyncValidator<num>(rules, debounceDuration: debounceDuration);
-  }
-
-  static AsyncValidator<bool> forBoolean(
-    List<ValidationRule<bool>> rules, {
-    Duration debounceDuration = const Duration(milliseconds: 300),
-  }) {
-    return AsyncValidator<bool>(rules, debounceDuration: debounceDuration);
-  }
-
-  static AsyncValidator<DateTime> forDate(
-    List<ValidationRule<DateTime>> rules, {
-    Duration debounceDuration = const Duration(milliseconds: 300),
-  }) {
-    return AsyncValidator<DateTime>(rules, debounceDuration: debounceDuration);
-  }
-
   /// Creates a new `AsyncValidator` instance by adding the provided [rule]
   /// to the existing list of rules, preserving the debounce duration.
   AsyncValidator<T> addRule(ValidationRule<T> rule) {

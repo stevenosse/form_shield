@@ -52,7 +52,11 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
       syncValidators: [
         Validator<String>([
           const RequiredRule(errorMessage: 'Username is required'),
-          LengthRule(minLength: 3, maxLength: 20, errorMessage: 'Username must be between 3 and 20 characters'),
+          LengthRule(
+            minLength: 3,
+            maxLength: 20,
+            errorMessage: 'Username must be between 3 and 20 characters',
+          ),
         ]),
       ],
       asyncValidators: [_asyncValidator],
@@ -74,7 +78,9 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
   }
 
   void _submitForm() {
-    if (_formKey.currentState!.validate() && !_compositeValidator.isValidating && _compositeValidator.isValid) {
+    if (_formKey.currentState!.validate() &&
+        !_compositeValidator.isValidating &&
+        _compositeValidator.isValid) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Registration successful!'),
@@ -88,14 +94,19 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Composite + async validation'), elevation: 0),
+      appBar: AppBar(
+        title: const Text('Composite + async validation'),
+        elevation: 0,
+      ),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(24.0),
             child: Card(
               elevation: 8,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Form(
@@ -108,7 +119,10 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                       const SizedBox(height: 16),
                       const Text(
                         'Create Account',
-                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 24),
@@ -116,7 +130,13 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Username', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                          const Text(
+                            'Username',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
                           const SizedBox(height: 4),
                           ListenableBuilder(
                             listenable: _asyncValidator.asyncState,
@@ -126,12 +146,20 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                                 suffixIcon = const SizedBox(
                                   width: 20,
                                   height: 20,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
                                 );
                               } else if (_compositeValidator.isValid) {
-                                suffixIcon = const Icon(Icons.check_circle, color: Colors.green);
+                                suffixIcon = const Icon(
+                                  Icons.check_circle,
+                                  color: Colors.green,
+                                );
                               } else if (!_compositeValidator.isValid) {
-                                suffixIcon = const Icon(Icons.error, color: Colors.red);
+                                suffixIcon = const Icon(
+                                  Icons.error,
+                                  color: Colors.red,
+                                );
                               }
                               return TextFormField(
                                 controller: _usernameController,
@@ -139,23 +167,31 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                                   labelText: 'Username',
                                   hintText: 'Choose a username',
                                   prefixIcon: const Icon(Icons.person),
-                                  suffixIcon: suffixIcon != null
-                                      ? Padding(padding: const EdgeInsets.all(12.0), child: suffixIcon)
-                                      : null,
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                                  suffixIcon:
+                                      suffixIcon != null
+                                          ? Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: suffixIcon,
+                                          )
+                                          : null,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
                                     borderSide: const BorderSide(width: 2),
                                   ),
                                   errorText: _compositeValidator.errorMessage,
-                                  errorStyle: const TextStyle(color: Colors.red),
+                                  errorStyle: const TextStyle(
+                                    color: Colors.red,
+                                  ),
                                 ),
                                 validator: _compositeValidator.call,
                                 onChanged: (value) {
                                   setState(() {
                                     if (value.length >= 3) {
                                       _compositeValidator(value);
-                                    } 
+                                    }
                                   });
                                 },
                               );
@@ -173,15 +209,24 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
                         listenable: _asyncValidator.asyncState,
                         builder: (context, _) {
                           return ElevatedButton(
-                            onPressed: _compositeValidator.isValidating ? null : _submitForm,
+                            onPressed:
+                                _compositeValidator.isValidating
+                                    ? null
+                                    : _submitForm,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                               padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
                             child: const Text(
                               'Register',
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           );
                         },

@@ -78,7 +78,8 @@ Import the package:
 import 'package:form_shield/form_shield.dart';
 ```
 
-Wrap your `TextFormField` (or other form fields) within a `Form` widget and assign a `GlobalKey<FormState>`. Use the `Validator` class to attach rules to the `validator` property of your fields:
+Wrap your `TextFormField` (or other form fields) within a `Form` widget and assign a `GlobalKey<FormState>`. Use the shorthand `validator([...])` helper to attach rules to the `validator` property of your fields:
+\- Note: The direct constructor `Validator<T>([...])` is deprecated. Please use `validator([...])`. The type-specific static factories (`Validator.forString/forNumber/forBoolean/forDate`) have been removed.
 
 ```dart
 import 'package:flutter/material.dart';
@@ -95,7 +96,7 @@ class MyForm extends StatelessWidget {
         children: [
           TextFormField(
             decoration: InputDecoration(labelText: 'Email'),
-            validator: Validator<String>([
+            validator: validator([
               RequiredRule(),
               EmailRule(),
             ]),
@@ -103,9 +104,16 @@ class MyForm extends StatelessWidget {
           TextFormField(
             decoration: InputDecoration(labelText: 'Password'),
             obscureText: true,
-            validator: Validator<String>([
+            validator: validator([
               RequiredRule(),
               PasswordRule(),
+            ]),
+          ),
+          TextFormField(
+            decoration: InputDecoration(labelText: 'Date (YYYY-MM-DD)'),
+            validator: validator([
+              // Validates a date string using ISO format
+              DateRule(minDate: DateTime(1900, 1, 1)),
             ]),
           ),
           ElevatedButton(
@@ -139,36 +147,6 @@ Validator<String>([
   RequiredRule(),
   MinLengthRule(8, errorMessage: 'Username must be at least 8 characters'),
   MaxLengthRule(20, errorMessage: 'Username cannot exceed 20 characters'),
-])
-```
-
-### Custom validation rules
-
-```dart
-Validator<String>([
-  RequiredRule(),
-  CustomRule(
-    validator: (value) => value != 'admin',
-    errorMessage: 'Username cannot be "admin"',
-  ),
-])
-```
-
-### Dynamic custom validation
-
-```dart
-Validator<String>([
-  DynamicCustomRule(
-    validator: (value) {
-      if (value == null || value.isEmpty) {
-        return 'Please enter a value';
-      }
-      if (value.contains(' ')) {
-        return 'No spaces allowed';
-      }
-      return null; // Validation passed
-    },
-  ),
 ])
 ```
 
@@ -281,9 +259,8 @@ TextFormField(
 - `UrlRule` - Validates that a string is a valid URL
 - `IPAddressRule` - Validates that a string is a valid IPv4 or IPv6 address
 - `CreditCardRule` - Validates that a string is a valid credit card number
-- `DateRangeRule` - Validates that a date is within a specified range
-- `CustomRule` - A validation rule that uses a custom function to validate values
-- `DynamicCustomRule` - A validation rule that uses a custom function to validate values and return a dynamic error message
+- `DateRule` - Validates that a date string is within specified bounds
+- `DateRangeRule` - Validates that an end date is after a start date (string inputs)
 
 ## Creating your own validation rules
 

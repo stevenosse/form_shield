@@ -42,19 +42,6 @@ void main() {
       expect(rule.errorMessage, errorMessage);
     });
 
-    test('validate returns success by default for sync validation', () {
-      final rule = TestAsyncValidationRule(
-        shouldPass: false, // Even with shouldPass=false
-        errorMessage: errorMessage,
-      );
-
-      final result = rule.validate('test');
-
-      // Sync validation should always pass for AsyncValidationRule
-      expect(result.isValid, true);
-      expect(result.errorMessage, null);
-    });
-
     test('validateAsync returns success result when validation passes',
         () async {
       final rule = TestAsyncValidationRule(

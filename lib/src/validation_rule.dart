@@ -30,7 +30,8 @@ abstract class AsyncValidationRule<T> extends ValidationRule<T> {
   ValidationResult validate(T? value) {
     // This is a fallback for sync validation contexts
     // Ideally, async rules should be validated using validateAsync
-    return const ValidationResult.success();
+    throw AssertionError(
+        'You must override and use validateAsync for async validation');
   }
 
   @override

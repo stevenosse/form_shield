@@ -98,3 +98,13 @@ class CompositeValidator<T> {
     }
   }
 }
+
+/// Creates a `CompositeValidator` with the provided list of synchronous validators.
+CompositeValidator<T> compositeValidator<T>(
+  final List<Validator<T>> syncValidators,
+  final List<AsyncValidator<T>> asyncValidators,
+) =>
+    CompositeValidator<T>(
+      syncValidators: syncValidators,
+      asyncValidators: asyncValidators,
+    );

@@ -1,8 +1,13 @@
 import '../validation_rule.dart';
 import '../validation_result.dart';
 
-/// Validates that a date is within specified bounds.
-class DateRule extends ValidationRule<DateTime> {
+/// Validates that a date string is within specified bounds.
+///
+/// This rule now operates on `String?` inputs to work directly with
+/// text form fields. Non-empty values are parsed using `DateTime.tryParse`
+/// (expects ISO-8601 like `YYYY-MM-DD`). If parsing fails, the rule
+/// returns an error using the configured message.
+class DateRule extends ValidationRule<String> {
   /// The minimum allowed date.
   final DateTime? minDate;
 
@@ -36,16 +41,23 @@ class DateRule extends ValidationRule<DateTime> {
   }
 
   @override
-  ValidationResult validate(DateTime? value) {
-    if (value == null) {
+  ValidationResult validate(String? value) {
+    // Empty values are handled by RequiredRule; treat as success.
+    if (value == null || value.trim().isEmpty) {
       return const ValidationResult.success();
     }
 
-    if (minDate != null && value.isBefore(minDate!)) {
+    final parsed = DateTime.tryParse(value.trim());
+    if (parsed == null) {
+      // Invalid date format
       return ValidationResult.error(errorMessage);
     }
 
-    if (maxDate != null && value.isAfter(maxDate!)) {
+    if (minDate != null && parsed.isBefore(minDate!)) {
+      return ValidationResult.error(errorMessage);
+    }
+
+    if (maxDate != null && parsed.isAfter(maxDate!)) {
       return ValidationResult.error(errorMessage);
     }
 

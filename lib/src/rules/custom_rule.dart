@@ -2,6 +2,7 @@ import '../validation_rule.dart';
 import '../validation_result.dart';
 
 /// A validation rule that uses a custom function to validate values.
+@Deprecated('Extend ValidationRule instead')
 class CustomRule<T> extends ValidationRule<T> {
   /// The function that performs the validation.
   final bool Function(T? value) _validator;
@@ -23,6 +24,7 @@ class CustomRule<T> extends ValidationRule<T> {
 }
 
 /// A validation rule that uses a custom function to validate values and return a dynamic error message.
+@Deprecated('Extend ValidationRule instead')
 class DynamicCustomRule<T> extends ValidationRule<T> {
   /// The function that performs the validation and returns an error message if validation fails.
   final String? Function(T? value) _validator;
