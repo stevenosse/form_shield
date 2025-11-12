@@ -134,7 +134,7 @@ class MyForm extends StatelessWidget {
 ### Customizing error messages
 
 ```dart
-Validator<String>([
+validator<String>([
   RequiredRule(errorMessage: 'Please enter your email address'),
   EmailRule(errorMessage: 'Please enter a valid email address'),
 ])
@@ -143,7 +143,7 @@ Validator<String>([
 ### Using multiple validation rules
 
 ```dart
-Validator<String>([
+validator<String>([
   RequiredRule(),
   MinLengthRule(8, errorMessage: 'Username must be at least 8 characters'),
   MaxLengthRule(20, errorMessage: 'Username cannot exceed 20 characters'),
@@ -153,7 +153,7 @@ Validator<String>([
 ### Validating numbers
 
 ```dart
-Validator<num>([
+validator<num>([
   MinValueRule(18, errorMessage: 'You must be at least 18 years old'),
   MaxValueRule(120, errorMessage: 'Please enter a valid age'),
 ])
@@ -163,13 +163,13 @@ Validator<num>([
 
 ```dart
 // General phone validation
-Validator<String>([
+validator<String>([
   RequiredRule(),
   PhoneRule(),
 ])
 
 // Country-specific phone validation
-Validator<String>([
+validator<String>([
   RequiredRule(),
   CountryPhoneRule(countryCode: 'CM'),
 ])
@@ -178,7 +178,7 @@ Validator<String>([
 ### Password validation with options
 
 ```dart
-Validator<String>([
+validator<String>([
   RequiredRule(),
   PasswordRule(
     options: PasswordOptions(
@@ -196,7 +196,7 @@ Validator<String>([
 ### Password validation with custom error messages
 
 ```dart
-Validator<String>([
+validator<String>([
   RequiredRule(),
   PasswordRule(
     options: PasswordOptions(
@@ -224,7 +224,7 @@ final passwordController = TextEditingController();
 // Password field
 TextFormField(
   controller: passwordController,
-  validator: Validator<String>([
+  validator: validator<String>([
     RequiredRule(),
     PasswordRule(),
   ]),
@@ -232,7 +232,7 @@ TextFormField(
 
 // Confirm password field
 TextFormField(
-  validator: Validator<String>([
+  validator: validator<String>([
     RequiredRule(),
     PasswordMatchRule(
       passwordGetter: () => passwordController.text,
@@ -290,7 +290,7 @@ class NoSpacesRule extends ValidationRule<String> {
 Then use it like any other validation rule:
 
 ```dart
-Validator<String>([
+validator<String>([
   RequiredRule(),
   NoSpacesRule(),
 ])
@@ -306,7 +306,7 @@ Form Shield offers three distinct validator classes to handle different validati
 
 ```dart
 // Create a validator with synchronous rules
-final validator = Validator<String>([
+final validator = validator<String>([
   RequiredRule(),
   EmailRule(),
 ]);
@@ -323,7 +323,7 @@ TextFormField(
 
 ```dart
 // Create an async validator with async rules
-final asyncValidator = AsyncValidator<String>([
+final asyncValidator = asyncValidator<String>([
   UsernameAvailabilityRule(
     checkAvailability: (username) async {
       // API call or database check
@@ -346,22 +346,22 @@ void dispose() {
 
 ```dart
 // Create sync and async validators
-final syncValidator = Validator<String>([
+final syncValidator = validator<String>([
   RequiredRule(),
   MinLengthRule(3),
   MaxLengthRule(20),
 ]);
 
-final asyncValidator = AsyncValidator<String>([
+final asyncValidator = asyncValidator<String>([
   UsernameAvailabilityRule(
     checkAvailability: _checkUsernameAvailability,
   ),
 ]);
 
 // Compose them together
-final compositeValidator = CompositeValidator<String>(
-  syncValidators: [syncValidator],
-  asyncValidators: [asyncValidator],
+final compositeValidator = compositeValidator<String>(
+  [syncValidator],
+  [asyncValidator],
 );
 
 // Use in your form
@@ -435,27 +435,27 @@ When using async validation, use the `AsyncValidator` or `CompositeValidator` cl
 class _MyFormState extends State<MyForm> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
-  late final AsyncValidator<String> _asyncValidator;
-  late final CompositeValidator<String> _compositeValidator;
+  late final _asyncValidator;
+  late final _compositeValidator;
 
   @override
   void initState() {
     super.initState();
 
-    _asyncValidator = AsyncValidator<String>([
+    _asyncValidator = asyncValidator<String>([
       UsernameAvailabilityRule(
         checkAvailability: _checkUsernameAvailability,
       ),
     ], debounceDuration: Duration(milliseconds: 500));
     
-    _compositeValidator = CompositeValidator<String>(
-      syncValidators: [
-        Validator<String>([
+    _compositeValidator = compositeValidator<String>(
+      [
+        validator<String>([
           RequiredRule(),
           LengthRule(minLength: 3, maxLength: 20),
         ]),
       ],
-      asyncValidators: [_asyncValidator],
+      [_asyncValidator],
     );
   }
 
@@ -528,7 +528,7 @@ class _MyFormState extends State<MyForm> {
 AsyncValidator includes built-in debouncing to prevent excessive API calls during typing. You can customize the debounce duration:
 
 ```dart
-AsyncValidator<String>([
+asyncValidator<String>([
   UsernameAvailabilityRule(checkAvailability: _checkUsername),
 ], debounceDuration: Duration(milliseconds: 800)) // Custom debounce time
 ```

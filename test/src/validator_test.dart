@@ -21,42 +21,18 @@ class MockValidationRule<T> extends ValidationRule<T> {
 
 void main() {
   group('Validator', () {
-    test('constructor creates a validator with the provided rules', () {
+    test('validator([]) returns a closure that validates provided rules', () {
       final rule1 =
           MockValidationRule<String>(shouldPass: true, errorMessage: 'Error 1');
       final rule2 =
           MockValidationRule<String>(shouldPass: true, errorMessage: 'Error 2');
 
-      final validator = Validator<String>([rule1, rule2]);
+      final v = validator<String>([rule1, rule2]);
 
-      expect(validator('test'), null);
+      expect(v('test'), null);
     });
 
-    test('addRule returns a new validator with the additional rule', () {
-      final rule1 =
-          MockValidationRule<String>(shouldPass: true, errorMessage: 'Error 1');
-      final rule2 = MockValidationRule<String>(
-          shouldPass: false, errorMessage: 'Error 2');
-
-      final validator1 = Validator<String>([rule1]);
-      final validator2 = validator1.addRule(rule2);
-
-      expect(validator1('test'), null);
-      expect(validator2('test'), 'Error 2');
-    });
-
-    test('call returns null when all rules pass', () {
-      final rule1 =
-          MockValidationRule<String>(shouldPass: true, errorMessage: 'Error 1');
-      final rule2 =
-          MockValidationRule<String>(shouldPass: true, errorMessage: 'Error 2');
-
-      final validator = Validator<String>([rule1, rule2]);
-
-      expect(validator('test'), null);
-    });
-
-    test('call returns the first error message when a rule fails', () {
+    test('validator closure applies rules and returns first error', () {
       final rule1 =
           MockValidationRule<String>(shouldPass: true, errorMessage: 'Error 1');
       final rule2 = MockValidationRule<String>(
@@ -64,9 +40,9 @@ void main() {
       final rule3 = MockValidationRule<String>(
           shouldPass: false, errorMessage: 'Error 3');
 
-      final validator = Validator<String>([rule1, rule2, rule3]);
+      final v = validator<String>([rule1, rule2, rule3]);
 
-      expect(validator('test'), 'Error 2');
+      expect(v('test'), 'Error 2');
     });
 
     test('top-level helper `validator([])` returns a working validator', () {
@@ -79,54 +55,55 @@ void main() {
       expect(v('ok'), null);
     });
 
-    test('errorMessage returns the current error message', () {
+    test('validator closure returns the current error message when invalid',
+        () {
       final rule =
           MockValidationRule<String>(shouldPass: false, errorMessage: 'Error');
 
-      final validator = Validator<String>([rule]);
-      validator('test');
+      final v = validator<String>([rule]);
 
-      expect(validator.errorMessage, 'Error');
+      expect(v('test'), 'Error');
     });
 
     group('Validator creation', () {
-      test('validator([]) creates a string validator', () {
+      test('validator([]) creates a string validator function', () {
         final rule = MockValidationRule<String>(
             shouldPass: false, errorMessage: 'Error');
 
         final v = validator<String>([rule]);
 
-        expect(v, isA<Validator<String>>());
+        expect(v, isA<String? Function(String?)>());
         expect(v('test'), 'Error');
       });
 
-      test('validator([]) creates a number validator', () {
+      test('validator([]) creates a number validator function', () {
         final rule =
             MockValidationRule<num>(shouldPass: false, errorMessage: 'Error');
 
         final v = validator<num>([rule]);
 
-        expect(v, isA<Validator<num>>());
+        expect(v, isA<String? Function(num?)>());
         expect(v(42), 'Error');
       });
 
-      test('validator([]) creates a boolean validator', () {
+      test('validator([]) creates a boolean validator function', () {
         final rule =
             MockValidationRule<bool>(shouldPass: false, errorMessage: 'Error');
 
         final v = validator<bool>([rule]);
 
-        expect(v, isA<Validator<bool>>());
+        expect(v, isA<String? Function(bool?)>());
         expect(v(true), 'Error');
       });
 
-      test('validator([]) creates a date validator (string input)', () {
+      test('validator([]) creates a date validator function (string input)',
+          () {
         final rule = MockValidationRule<String>(
             shouldPass: false, errorMessage: 'Error');
 
         final v = validator<String>([rule]);
 
-        expect(v, isA<Validator<String>>());
+        expect(v, isA<String? Function(String?)>());
         expect(v('2023-01-01'), 'Error');
       });
     });

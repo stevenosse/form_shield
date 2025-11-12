@@ -72,16 +72,12 @@ class _LoginFormExampleState extends State<LoginFormExample> {
                           ),
                         ),
                         keyboardType: TextInputType.emailAddress,
-                        validator:
-                            Validator<String>([
-                              const RequiredRule(
-                                errorMessage: 'Email is required',
-                              ),
-                              EmailRule(
-                                errorMessage:
-                                    'Please enter a valid email address',
-                              ),
-                            ]).call,
+                        validator: validator<String>([
+                          const RequiredRule(errorMessage: 'Email is required'),
+                          EmailRule(
+                            errorMessage: 'Please enter a valid email address',
+                          ),
+                        ]),
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
@@ -111,23 +107,20 @@ class _LoginFormExampleState extends State<LoginFormExample> {
                           ),
                         ),
                         obscureText: _obscurePassword,
-                        validator:
-                            Validator<String>(const [
-                              RequiredRule(
-                                errorMessage: 'Password is required',
-                              ),
-                              PasswordRule(
-                                options: PasswordOptions(
-                                  minLength: 8,
-                                  requireUppercase: true,
-                                  requireLowercase: true,
-                                  requireDigit: true,
-                                  requireSpecialChar: true,
-                                ),
-                                errorMessage:
-                                    'Password must be at least 8 characters with uppercase, lowercase, digit, and special character',
-                              ),
-                            ]).call,
+                        validator: validator<String>(const [
+                          RequiredRule(errorMessage: 'Password is required'),
+                          PasswordRule(
+                            options: PasswordOptions(
+                              minLength: 8,
+                              requireUppercase: true,
+                              requireLowercase: true,
+                              requireDigit: true,
+                              requireSpecialChar: true,
+                            ),
+                            errorMessage:
+                                'Password must be at least 8 characters with uppercase, lowercase, digit, and special character',
+                          ),
+                        ]),
                       ),
                       const SizedBox(height: 12),
                       Row(

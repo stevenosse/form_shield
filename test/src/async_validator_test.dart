@@ -30,7 +30,7 @@ void main() {
       final rule = MockAsyncValidationRule<String>(
           shouldPass: true, errorMessage: 'Error');
 
-      final validator = AsyncValidator<String>(
+      final validator = asyncValidator<String>(
         [rule],
         debounceDuration: const Duration(milliseconds: 200),
       );
@@ -46,7 +46,7 @@ void main() {
       final rule2 = MockAsyncValidationRule<String>(
           shouldPass: false, errorMessage: 'Error 2');
 
-      final validator1 = AsyncValidator<String>([rule1]);
+      final validator1 = asyncValidator<String>([rule1]);
       final validator2 = validator1.addRule(rule2);
 
       // Validators should be different instances
@@ -58,7 +58,7 @@ void main() {
           shouldPass: false, errorMessage: 'Error', delay: Duration.zero);
 
       final validator =
-          AsyncValidator<String>([rule], debounceDuration: Duration.zero);
+          asyncValidator<String>([rule], debounceDuration: Duration.zero);
 
       // First validation
       validator.validate('test');
@@ -85,13 +85,13 @@ void main() {
       final rule = MockAsyncValidationRule<String>(
           shouldPass: true, errorMessage: 'Error');
 
-      final validator = AsyncValidator<String>([rule]);
+      final validator = asyncValidator<String>([rule]);
 
       final result = await validator.validateAsync('test');
       expect(result, true);
       expect(validator.isValid, true);
 
-      final validator2 = AsyncValidator<String>([
+      final validator2 = asyncValidator<String>([
         MockAsyncValidationRule<String>(
             shouldPass: false, errorMessage: 'Failed')
       ]);
@@ -106,7 +106,7 @@ void main() {
       final rule = MockAsyncValidationRule<String>(
           shouldPass: true, errorMessage: 'Error');
 
-      final validator = AsyncValidator<String>([rule]);
+      final validator = asyncValidator<String>([rule]);
 
       // Start a validation that would be debounced
       validator.validate('test');
@@ -123,36 +123,32 @@ void main() {
         final rule = MockAsyncValidationRule<String>(
             shouldPass: false, errorMessage: 'Error');
 
-        final validator = AsyncValidator<String>([rule]);
-
-        expect(validator, isA<AsyncValidator<String>>());
+        final validator = asyncValidator<String>([rule]);
+        expect(validator, isNotNull);
       });
 
       test('constructor creates a number async validator', () {
         final rule = MockAsyncValidationRule<num>(
             shouldPass: false, errorMessage: 'Error');
 
-        final validator = AsyncValidator<num>([rule]);
-
-        expect(validator, isA<AsyncValidator<num>>());
+        final validator = asyncValidator<num>([rule]);
+        expect(validator, isNotNull);
       });
 
       test('constructor creates a boolean async validator', () {
         final rule = MockAsyncValidationRule<bool>(
             shouldPass: false, errorMessage: 'Error');
 
-        final validator = AsyncValidator<bool>([rule]);
-
-        expect(validator, isA<AsyncValidator<bool>>());
+        final validator = asyncValidator<bool>([rule]);
+        expect(validator, isNotNull);
       });
 
       test('constructor creates a date async validator (string input)', () {
         final rule = MockAsyncValidationRule<String>(
             shouldPass: false, errorMessage: 'Error');
 
-        final validator = AsyncValidator<String>([rule]);
-
-        expect(validator, isA<AsyncValidator<String>>());
+        final validator = asyncValidator<String>([rule]);
+        expect(validator, isNotNull);
       });
     });
   });

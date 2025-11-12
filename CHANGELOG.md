@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.8.0] - 2025-11-12
+### Added
+- Top-level `asyncValidator<T>(rules, {debounceDuration})` helper for async validation.
+- Top-level `compositeValidator<T>(syncValidators, asyncValidators)` helper for combined sync/async validation.
+
+### Changed
+- `validator<T>(rules)` now returns a closure `String? Function(T?)` for implicit tear-off compatibility with Flutter `FormFieldValidator`.
+- `CompositeValidator<T>` consumes sync validators as functions (`String? Function(T?)`), aligning with the `validator` helper.
+- Documentation and examples updated to use `validator`, `asyncValidator`, and `compositeValidator` helpers.
+
+### Breaking Changes
+- Export `Validator`, `AsyncValidator`, and `CompositeValidator` types, but their constructors are non-public; use helpers to instantiate.
+- `compositeValidator` uses positional parameters: `compositeValidator(syncValidators, asyncValidators)`.
+
 ## [0.7.0] - 2025-11-10
 ### Added
 - Top-level `validator([])` helper for concise validator creation.
@@ -14,7 +28,7 @@
 ### Deprecated
 - Direct constructor `Validator([...])` in favor of `validator([])`.
 
-### Removed
+### Breaking Changes
 - Removed `Validator.forString`, `Validator.forNumber`, `Validator.forBoolean`, and `Validator.forDate`. Use the top-level `validator([])` helper instead.
 - Removed `AsyncValidator.forString`, `AsyncValidator.forNumber`, `AsyncValidator.forBoolean`, and `AsyncValidator.forDate`. Use the `AsyncValidator<T>([rules])` constructor instead.
 

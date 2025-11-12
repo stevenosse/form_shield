@@ -20,7 +20,7 @@ class AsyncValidator<T> {
   T? _lastValidatedValue;
 
   /// Creates an immutable `AsyncValidator` instance with the provided list of rules.
-  AsyncValidator(
+  AsyncValidator._(
     List<ValidationRule<T>> rules, {
     Duration debounceDuration = const Duration(milliseconds: 300),
   })  : _rules = List.unmodifiable(rules),
@@ -30,7 +30,7 @@ class AsyncValidator<T> {
   /// Creates a new `AsyncValidator` instance by adding the provided [rule]
   /// to the existing list of rules, preserving the debounce duration.
   AsyncValidator<T> addRule(ValidationRule<T> rule) {
-    return AsyncValidator<T>([..._rules, rule],
+    return AsyncValidator<T>._([..._rules, rule],
         debounceDuration: _debounceDuration);
   }
 
@@ -120,3 +120,9 @@ class AsyncValidator<T> {
     _asyncState.reset();
   }
 }
+
+AsyncValidator<T> asyncValidator<T>(
+  List<ValidationRule<T>> rules, {
+  Duration debounceDuration = const Duration(milliseconds: 300),
+}) =>
+    AsyncValidator<T>._(rules, debounceDuration: debounceDuration);

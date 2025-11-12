@@ -44,13 +44,13 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
   void initState() {
     super.initState();
 
-    _asyncValidator = AsyncValidator<String>([
+    _asyncValidator = asyncValidator<String>([
       UsernameAvailabilityRule(checkAvailability: _checkUsernameAvailability),
     ], debounceDuration: Duration(milliseconds: 100));
 
-    _compositeValidator = CompositeValidator<String>(
-      syncValidators: [
-        Validator<String>([
+    _compositeValidator = compositeValidator<String>(
+      [
+        validator<String>([
           const RequiredRule(errorMessage: 'Username is required'),
           LengthRule(
             minLength: 3,
@@ -59,7 +59,7 @@ class _AsyncValidationExampleState extends State<AsyncValidationExample> {
           ),
         ]),
       ],
-      asyncValidators: [_asyncValidator],
+      [_asyncValidator],
     );
   }
 

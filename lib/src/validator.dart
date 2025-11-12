@@ -8,21 +8,21 @@ class Validator<T> {
   /// The list of validation rules to apply.
   final List<ValidationRule<T>> _rules;
 
-  String? _syncErrorMessage;
+  String? _errorMessage;
 
   /// Creates an immutable `Validator` instance with the provided list of rules.
-  Validator(List<ValidationRule<T>> rules)
+  Validator._(List<ValidationRule<T>> rules)
       : _rules = List.unmodifiable(rules),
-        _syncErrorMessage = null;
+        _errorMessage = null;
 
   /// Creates a new `Validator` instance by adding the provided [rule]
   /// to the existing list of rules.
   Validator<T> addRule(ValidationRule<T> rule) {
-    return Validator<T>([..._rules, rule]);
+    return Validator<T>._([..._rules, rule]);
   }
 
   /// Returns the current error message from synchronous validation.
-  String? get errorMessage => _syncErrorMessage;
+  String? get errorMessage => _errorMessage;
 
   /// Executes the validation logic for the given [value] against all registered rules.
   ///
@@ -33,19 +33,17 @@ class Validator<T> {
     for (final rule in _rules) {
       final result = rule.validate(value);
       if (!result.isValid) {
-        _syncErrorMessage = result.errorMessage;
-        return _syncErrorMessage;
+        _errorMessage = result.errorMessage;
+        return _errorMessage;
       }
     }
 
-    _syncErrorMessage = null;
+    _errorMessage = null;
     return null;
   }
 }
 
-/// Convenience helper to create a `Validator` from a list of rules.
-///
-/// This provides a terser API so you can write `validator([RequiredRule(), EmailRule()])`
-/// instead of `Validator<String>([RequiredRule(), EmailRule()])`.
-/// It returns a `Validator<T>` which is directly usable as a Flutter `FormFieldValidator`.
-Validator<T> validator<T>(List<ValidationRule<T>> rules) => Validator<T>(rules);
+String? Function(T?) validator<T>(List<ValidationRule<T>> rules) {
+  final v = Validator<T>._(rules);
+  return (T? value) => v(value);
+}
