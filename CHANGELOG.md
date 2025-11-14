@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.8.1] - 2025-11-14
+### Changed
+- `FormInputValueRule` now requires `errorMessage` in its constructor.
+
 ## [0.8.0] - 2025-11-12
 ### Added
 - Top-level `asyncValidator<T>(rules, {debounceDuration})` helper for async validation.

@@ -110,9 +110,10 @@ class FormInputValueRule extends ValidationRule<String> {
 class FormInputMinValueRule extends FormInputValueRule {
   /// Creates a minimum value validation rule.
   FormInputMinValueRule({
+    required super.errorMessage,
     required super.minValue,
     required super.convert,
-  }) : super(errorMessage: 'Value must be at least $minValue');
+  });
 }
 
 /// Validates that a numeric value is at most a specified maximum.
@@ -120,7 +121,8 @@ class FormInputMinValueRule extends FormInputValueRule {
 class FormInputMaxValueRule extends FormInputValueRule {
   /// Creates a maximum value validation rule.
   FormInputMaxValueRule({
+    required super.errorMessage,
     required super.maxValue,
     required super.convert,
-  }) : super(errorMessage: 'Value must be at most $maxValue');
+  });
 }

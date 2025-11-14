@@ -151,6 +151,7 @@ void main() {
     group('constructor', () {
       test('creates a ValueRule with only minValue set', () {
         final rule = FormInputMinValueRule(
+          errorMessage: 'Value must be at least 5',
           minValue: 5,
           convert: (value) => num.parse(value),
         );
@@ -162,6 +163,7 @@ void main() {
 
       test('creates a ValueRule with only maxValue set', () {
         final rule = FormInputMaxValueRule(
+          errorMessage: 'Value must be at most 10',
           maxValue: 10,
           convert: (value) => num.parse(value),
         );
