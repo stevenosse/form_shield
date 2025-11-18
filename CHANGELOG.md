@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.8.2] - 2025-11-18
+### Fixed
+- Corrected phone number regex pattern in `PhoneRule` to properly validate various formats.
+- Resolved issues in `PhoneRule` where null and empty string inputs were incorrectly validated as successful.
+
+### Added
+- Added tests for null and empty string cases in `PhoneRule` to ensure accurate validation behavior.
+
+
 ## [0.8.1] - 2025-11-14
 ### Changed
 - `FormInputValueRule` now requires `errorMessage` in its constructor.
