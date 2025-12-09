@@ -6,11 +6,6 @@ void main() {
     const defaultErrorMessage = 'Please enter a valid phone number';
     const customErrorMessage = 'Custom error message';
 
-    test('constructor sets default error message when not provided', () {
-      final rule = PhoneRule();
-      expect(rule.errorMessage, defaultErrorMessage);
-    });
-
     test('constructor sets custom error message when provided', () {
       final rule = PhoneRule(errorMessage: customErrorMessage);
       expect(rule.errorMessage, customErrorMessage);
@@ -45,7 +40,8 @@ void main() {
 
         for (final phone in invalidPhones) {
           final result = rule.validate(phone);
-          expect(result.isValid, false, reason: 'Phone "$phone" should be invalid');
+          expect(result.isValid, false,
+              reason: 'Phone "$phone" should be invalid');
           expect(result.errorMessage, defaultErrorMessage);
         }
       });
@@ -63,7 +59,8 @@ void main() {
 
         for (final phone in validPhones) {
           final result = rule.validate(phone);
-          expect(result.isValid, true, reason: 'Phone "$phone" should be valid');
+          expect(result.isValid, true,
+              reason: 'Phone "$phone" should be valid');
           expect(result.errorMessage, null);
         }
       });
@@ -92,7 +89,8 @@ void main() {
 
         for (final phone in validPhones) {
           final result = rule.validate(phone);
-          expect(result.isValid, true, reason: 'Phone "$phone" should be valid');
+          expect(result.isValid, true,
+              reason: 'Phone "$phone" should be valid');
         }
       });
 
@@ -111,7 +109,8 @@ void main() {
 
         for (final phone in invalidPhones) {
           final result = rule.validate(phone);
-          expect(result.isValid, false, reason: 'Phone "$phone" should be invalid');
+          expect(result.isValid, false,
+              reason: 'Phone "$phone" should be invalid');
           expect(result.errorMessage, defaultErrorMessage);
         }
       });

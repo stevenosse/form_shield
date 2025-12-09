@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login_form_example.dart';
 import 'async_validation_example.dart';
+import 'package:form_shield/form_shield.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'Form Shield Examples',
       theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
       home: const ExampleSelector(),
+      localizationsDelegates: [FormShieldI18n.delegate],
     );
   }
 }

@@ -4,18 +4,18 @@ import 'package:form_shield/form_shield.dart';
 void main() {
   group('LengthRule', () {
     group('constructor', () {
-      test('sets default error message when not provided', () {
+      test('uses localized error message at validation time', () {
         final rule = LengthRule(minLength: 5, maxLength: 10);
-        expect(rule.errorMessage, 'Must be between 5 and 10 characters');
+        expect(rule.validate('abc').errorMessage,
+            'Must be between 5 and 10 characters');
 
         final minRule = LengthRule(minLength: 5);
-        expect(minRule.errorMessage, 'Must be at least 5 characters');
+        expect(minRule.validate('abc').errorMessage,
+            'Must be at least 5 characters');
 
         final maxRule = LengthRule(maxLength: 10);
-        expect(maxRule.errorMessage, 'Must be at most 10 characters');
-
-        final noLimitsRule = LengthRule();
-        expect(noLimitsRule.errorMessage, 'Invalid length');
+        expect(maxRule.validate('abcdefghijklm').errorMessage,
+            'Must be at most 10 characters');
       });
 
       test('sets custom error message when provided', () {
@@ -101,7 +101,9 @@ void main() {
 
       expect(rule.minLength, 5);
       expect(rule.maxLength, null);
-      expect(rule.errorMessage, 'Must be at least 5 characters');
+      // Error message is resolved at validation time
+      expect(
+          rule.validate('abc').errorMessage, 'Must be at least 5 characters');
     });
 
     test('constructor sets custom error message when provided', () {
@@ -128,7 +130,9 @@ void main() {
 
       expect(rule.minLength, null);
       expect(rule.maxLength, 10);
-      expect(rule.errorMessage, 'Must be at most 10 characters');
+      // Error message is resolved at validation time
+      expect(rule.validate('abcdefghijklm').errorMessage,
+          'Must be at most 10 characters');
     });
 
     test('constructor sets custom error message when provided', () {

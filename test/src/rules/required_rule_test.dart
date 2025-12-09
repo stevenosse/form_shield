@@ -6,11 +6,6 @@ void main() {
     const defaultErrorMessage = 'This field is required';
     const customErrorMessage = 'Custom error message';
 
-    test('constructor sets default error message when not provided', () {
-      final rule = RequiredRule();
-      expect(rule.errorMessage, defaultErrorMessage);
-    });
-
     test('constructor sets custom error message when provided', () {
       final rule = RequiredRule(errorMessage: customErrorMessage);
       expect(rule.errorMessage, customErrorMessage);
@@ -79,6 +74,14 @@ void main() {
 
         expect(result.isValid, true);
         expect(result.errorMessage, null);
+      });
+
+      test('uses custom error message when provided', () {
+        final rule = RequiredRule(errorMessage: customErrorMessage);
+        final result = rule.validate(null);
+
+        expect(result.isValid, false);
+        expect(result.errorMessage, customErrorMessage);
       });
     });
   });

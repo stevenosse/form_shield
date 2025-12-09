@@ -1,5 +1,6 @@
 import '../validation_rule.dart';
 import '../validation_result.dart';
+import '../form_shield_localizations.dart';
 
 /// Validates that a string is a valid IP address (IPv4 or IPv6).
 class IPAddressRule extends ValidationRule<String> {
@@ -21,12 +22,25 @@ class IPAddressRule extends ValidationRule<String> {
   ///
   /// By default, both IPv4 and IPv6 addresses are allowed. You can restrict validation
   /// to only IPv4 or only IPv6 by setting the corresponding parameter to false.
+  ///
+  /// If [errorMessage] is not provided, uses the localized message.
   IPAddressRule({
-    super.errorMessage = 'Please enter a valid IP address',
+    super.errorMessage = '',
     this.allowIPv4 = true,
     this.allowIPv6 = true,
   }) : assert(
             allowIPv4 || allowIPv6, 'At least one IP version must be allowed');
+
+  /// Gets the appropriate localized error message.
+  String _getLocalizedMessage() {
+    if (allowIPv4 && allowIPv6) {
+      return FormShieldLocalizations.invalidIpv4OrIpv6Address;
+    } else if (allowIPv4) {
+      return FormShieldLocalizations.invalidIpv4Address;
+    } else {
+      return FormShieldLocalizations.invalidIpv6Address;
+    }
+  }
 
   @override
   ValidationResult validate(String? value) {
@@ -38,14 +52,9 @@ class IPAddressRule extends ValidationRule<String> {
     final isIPv6 = allowIPv6 && _ipv6Regex.hasMatch(value);
 
     if (!isIPv4 && !isIPv6) {
-      if (allowIPv4 && allowIPv6) {
-        return ValidationResult.error(
-            'Please enter a valid IPv4 or IPv6 address');
-      } else if (allowIPv4) {
-        return ValidationResult.error('Please enter a valid IPv4 address');
-      } else {
-        return ValidationResult.error('Please enter a valid IPv6 address');
-      }
+      final message =
+          errorMessage.isNotEmpty ? errorMessage : _getLocalizedMessage();
+      return ValidationResult.error(message);
     }
 
     return const ValidationResult.success();

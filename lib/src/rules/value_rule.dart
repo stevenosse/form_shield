@@ -1,5 +1,6 @@
 import '../validation_rule.dart';
 import '../validation_result.dart';
+import '../form_shield_localizations.dart';
 
 /// Validates that a numeric value is within specified bounds.
 class ValueRule extends ValidationRule<num> {
@@ -10,24 +11,25 @@ class ValueRule extends ValidationRule<num> {
   final num? maxValue;
 
   /// Creates a value validation rule with the specified bounds and error message.
+  ///
+  /// If [errorMessage] is not provided, uses the localized message.
   ValueRule({
     this.minValue,
     this.maxValue,
-    String? errorMessage,
-  }) : super(
-          errorMessage:
-              errorMessage ?? _getDefaultErrorMessage(minValue, maxValue),
-        );
+    super.errorMessage = '',
+  });
 
-  static String _getDefaultErrorMessage(num? minValue, num? maxValue) {
+  /// Gets the appropriate localized error message.
+  String _getLocalizedMessage() {
     if (minValue != null && maxValue != null) {
-      return 'Must be between $minValue and $maxValue';
+      return FormShieldLocalizations.valueBetween(
+          minValue.toString(), maxValue.toString());
     } else if (minValue != null) {
-      return 'Must be at least $minValue';
+      return FormShieldLocalizations.valueMin(minValue.toString());
     } else if (maxValue != null) {
-      return 'Must be at most $maxValue';
+      return FormShieldLocalizations.valueMax(maxValue.toString());
     } else {
-      return 'Invalid value';
+      return FormShieldLocalizations.invalidValue;
     }
   }
 
@@ -38,11 +40,15 @@ class ValueRule extends ValidationRule<num> {
     }
 
     if (minValue != null && value < minValue!) {
-      return ValidationResult.error(errorMessage);
+      final message =
+          errorMessage.isNotEmpty ? errorMessage : _getLocalizedMessage();
+      return ValidationResult.error(message);
     }
 
     if (maxValue != null && value > maxValue!) {
-      return ValidationResult.error(errorMessage);
+      final message =
+          errorMessage.isNotEmpty ? errorMessage : _getLocalizedMessage();
+      return ValidationResult.error(message);
     }
 
     return const ValidationResult.success();
@@ -55,9 +61,7 @@ class MinValueRule extends ValueRule {
   MinValueRule(
     num minValue, {
     super.errorMessage,
-  }) : super(
-          minValue: minValue,
-        );
+  }) : super(minValue: minValue);
 }
 
 /// Validates that a numeric value is at most a specified maximum.
@@ -66,9 +70,7 @@ class MaxValueRule extends ValueRule {
   MaxValueRule(
     num maxValue, {
     super.errorMessage,
-  }) : super(
-          maxValue: maxValue,
-        );
+  }) : super(maxValue: maxValue);
 }
 
 /// Validates that a numeric value is at least a specified minimum.
@@ -78,12 +80,29 @@ class FormInputValueRule extends ValidationRule<String> {
   final num? maxValue;
   final num Function(String) convert;
 
+  /// Creates a form input value validation rule.
+  ///
+  /// If [errorMessage] is not provided, uses the localized message.
   FormInputValueRule({
-    required super.errorMessage,
+    super.errorMessage = '',
     this.minValue,
     this.maxValue,
     required this.convert,
   });
+
+  /// Gets the appropriate localized error message.
+  String _getLocalizedMessage() {
+    if (minValue != null && maxValue != null) {
+      return FormShieldLocalizations.valueBetween(
+          minValue.toString(), maxValue.toString());
+    } else if (minValue != null) {
+      return FormShieldLocalizations.valueMin(minValue.toString());
+    } else if (maxValue != null) {
+      return FormShieldLocalizations.valueMax(maxValue.toString());
+    } else {
+      return FormShieldLocalizations.invalidValue;
+    }
+  }
 
   @override
   ValidationResult validate(String? value) {
@@ -94,11 +113,15 @@ class FormInputValueRule extends ValidationRule<String> {
     num parsedValue = convert(value);
 
     if (minValue != null && parsedValue < minValue!) {
-      return ValidationResult.error(errorMessage);
+      final message =
+          errorMessage.isNotEmpty ? errorMessage : _getLocalizedMessage();
+      return ValidationResult.error(message);
     }
 
     if (maxValue != null && parsedValue > maxValue!) {
-      return ValidationResult.error(errorMessage);
+      final message =
+          errorMessage.isNotEmpty ? errorMessage : _getLocalizedMessage();
+      return ValidationResult.error(message);
     }
 
     return const ValidationResult.success();
@@ -110,7 +133,7 @@ class FormInputValueRule extends ValidationRule<String> {
 class FormInputMinValueRule extends FormInputValueRule {
   /// Creates a minimum value validation rule.
   FormInputMinValueRule({
-    required super.errorMessage,
+    super.errorMessage,
     required super.minValue,
     required super.convert,
   });
@@ -121,7 +144,7 @@ class FormInputMinValueRule extends FormInputValueRule {
 class FormInputMaxValueRule extends FormInputValueRule {
   /// Creates a maximum value validation rule.
   FormInputMaxValueRule({
-    required super.errorMessage,
+    super.errorMessage,
     required super.maxValue,
     required super.convert,
   });

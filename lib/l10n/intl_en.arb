@@ -1,0 +1,202 @@
+{
+  "@@locale": "en",
+  "@@last_modified": "2025-12-09",
+  "requiredField": "This field is required",
+  "@requiredField": {
+    "description": "Error message when a required field is empty"
+  },
+  "invalidEmail": "Please enter a valid email address",
+  "@invalidEmail": {
+    "description": "Error message for invalid email format"
+  },
+  "invalidPhone": "Please enter a valid phone number",
+  "@invalidPhone": {
+    "description": "Error message for invalid phone number format"
+  },
+  "invalidUrl": "Please enter a valid URL",
+  "@invalidUrl": {
+    "description": "Error message for invalid URL format"
+  },
+  "urlProtocolRequired": "URL must use one of the following protocols: {protocols}",
+  "@urlProtocolRequired": {
+    "description": "Error message when URL protocol is not in allowed list",
+    "placeholders": {
+      "protocols": {
+        "type": "String",
+        "example": "http, https"
+      }
+    }
+  },
+  "invalidCreditCard": "Please enter a valid credit card number",
+  "@invalidCreditCard": {
+    "description": "Error message for invalid credit card number"
+  },
+  "invalidIpAddress": "Please enter a valid IP address",
+  "@invalidIpAddress": {
+    "description": "Error message for invalid IP address"
+  },
+  "invalidIpv4Address": "Please enter a valid IPv4 address",
+  "@invalidIpv4Address": {
+    "description": "Error message for invalid IPv4 address"
+  },
+  "invalidIpv6Address": "Please enter a valid IPv6 address",
+  "@invalidIpv6Address": {
+    "description": "Error message for invalid IPv6 address"
+  },
+  "invalidIpv4OrIpv6Address": "Please enter a valid IPv4 or IPv6 address",
+  "@invalidIpv4OrIpv6Address": {
+    "description": "Error message when both IPv4 and IPv6 are allowed but neither matches"
+  },
+  "passwordsDoNotMatch": "Passwords do not match",
+  "@passwordsDoNotMatch": {
+    "description": "Error message when password confirmation doesn't match"
+  },
+  "passwordRequirements": "Password does not meet requirements",
+  "@passwordRequirements": {
+    "description": "Generic error for password not meeting requirements"
+  },
+  "passwordMinLength": "Password must be at least {length} characters long",
+  "@passwordMinLength": {
+    "description": "Error message for password minimum length",
+    "placeholders": {
+      "length": {
+        "type": "int",
+        "example": "8"
+      }
+    }
+  },
+  "passwordUppercase": "Password must contain at least one uppercase letter",
+  "@passwordUppercase": {
+    "description": "Error message when password lacks uppercase letter"
+  },
+  "passwordLowercase": "Password must contain at least one lowercase letter",
+  "@passwordLowercase": {
+    "description": "Error message when password lacks lowercase letter"
+  },
+  "passwordDigit": "Password must contain at least one digit",
+  "@passwordDigit": {
+    "description": "Error message when password lacks digit"
+  },
+  "passwordSpecialChar": "Password must contain at least one special character",
+  "@passwordSpecialChar": {
+    "description": "Error message when password lacks special character"
+  },
+  "lengthBetween": "Must be between {min} and {max} characters",
+  "@lengthBetween": {
+    "description": "Error message for string length between min and max",
+    "placeholders": {
+      "min": {
+        "type": "int",
+        "example": "5"
+      },
+      "max": {
+        "type": "int",
+        "example": "10"
+      }
+    }
+  },
+  "lengthMin": "Must be at least {min} characters",
+  "@lengthMin": {
+    "description": "Error message for string minimum length",
+    "placeholders": {
+      "min": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "lengthMax": "Must be at most {max} characters",
+  "@lengthMax": {
+    "description": "Error message for string maximum length",
+    "placeholders": {
+      "max": {
+        "type": "int",
+        "example": "10"
+      }
+    }
+  },
+  "invalidLength": "Invalid length",
+  "@invalidLength": {
+    "description": "Generic error for invalid string length"
+  },
+  "valueBetween": "Must be between {min} and {max}",
+  "@valueBetween": {
+    "description": "Error message for numeric value between min and max",
+    "placeholders": {
+      "min": {
+        "type": "String",
+        "example": "1"
+      },
+      "max": {
+        "type": "String",
+        "example": "100"
+      }
+    }
+  },
+  "valueMin": "Must be at least {min}",
+  "@valueMin": {
+    "description": "Error message for numeric minimum value",
+    "placeholders": {
+      "min": {
+        "type": "String",
+        "example": "1"
+      }
+    }
+  },
+  "valueMax": "Must be at most {max}",
+  "@valueMax": {
+    "description": "Error message for numeric maximum value",
+    "placeholders": {
+      "max": {
+        "type": "String",
+        "example": "100"
+      }
+    }
+  },
+  "invalidValue": "Invalid value",
+  "@invalidValue": {
+    "description": "Generic error for invalid numeric value"
+  },
+  "invalidDate": "Invalid date",
+  "@invalidDate": {
+    "description": "Generic error for invalid date format"
+  },
+  "dateBetween": "Date must be between {min} and {max}",
+  "@dateBetween": {
+    "description": "Error message for date between min and max",
+    "placeholders": {
+      "min": {
+        "type": "String",
+        "example": "2024-01-01"
+      },
+      "max": {
+        "type": "String",
+        "example": "2024-12-31"
+      }
+    }
+  },
+  "dateOnOrAfter": "Date must be on or after {date}",
+  "@dateOnOrAfter": {
+    "description": "Error message for date minimum",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "2024-01-01"
+      }
+    }
+  },
+  "dateOnOrBefore": "Date must be on or before {date}",
+  "@dateOnOrBefore": {
+    "description": "Error message for date maximum",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "2024-12-31"
+      }
+    }
+  },
+  "endDateAfterStart": "End date must be after start date",
+  "@endDateAfterStart": {
+    "description": "Error message when end date is before start date"
+  }
+}

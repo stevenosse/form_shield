@@ -4,22 +4,25 @@ import 'package:form_shield/form_shield.dart';
 void main() {
   group('DateRule', () {
     group('constructor', () {
-      test('sets default error message when not provided', () {
+      test('uses localized error message at validation time', () {
         final minDate = DateTime(2023, 1, 1);
         final maxDate = DateTime(2023, 12, 31);
 
         final rule = DateRule(minDate: minDate, maxDate: maxDate);
-        expect(rule.errorMessage,
+        expect(rule.validate('2022-06-15').errorMessage,
             'Date must be between 2023-01-01 and 2023-12-31');
 
         final minRule = DateRule(minDate: minDate);
-        expect(minRule.errorMessage, 'Date must be on or after 2023-01-01');
+        expect(minRule.validate('2022-06-15').errorMessage,
+            'Date must be on or after 2023-01-01');
 
         final maxRule = DateRule(maxDate: maxDate);
-        expect(maxRule.errorMessage, 'Date must be on or before 2023-12-31');
+        expect(maxRule.validate('2024-06-15').errorMessage,
+            'Date must be on or before 2023-12-31');
 
         final noLimitsRule = DateRule();
-        expect(noLimitsRule.errorMessage, 'Invalid date');
+        expect(
+            noLimitsRule.validate('not-a-date').errorMessage, 'Invalid date');
       });
 
       test('sets custom error message when provided', () {

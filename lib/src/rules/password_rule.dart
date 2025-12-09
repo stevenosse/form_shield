@@ -1,5 +1,6 @@
 import '../validation_rule.dart';
 import '../validation_result.dart';
+import '../form_shield_localizations.dart';
 
 /// Configuration options for password validation.
 class PasswordOptions {
@@ -54,8 +55,10 @@ class PasswordRule extends ValidationRule<String> {
   final PasswordOptions options;
 
   /// Creates a password validation rule with the specified error message and options.
+  ///
+  /// If custom messages are not provided in options, uses localized messages.
   const PasswordRule({
-    super.errorMessage = 'Password does not meet requirements',
+    super.errorMessage = '',
     this.options = const PasswordOptions(),
   });
 
@@ -69,28 +72,27 @@ class PasswordRule extends ValidationRule<String> {
 
     if (value.length < options.minLength) {
       errors.add(options.minLengthMessage ??
-          'Password must be at least ${options.minLength} characters long');
+          FormShieldLocalizations.passwordMinLength(options.minLength));
     }
 
     if (options.requireUppercase && !value.contains(RegExp(r'[A-Z]'))) {
       errors.add(options.uppercaseMessage ??
-          'Password must contain at least one uppercase letter');
+          FormShieldLocalizations.passwordUppercase);
     }
 
     if (options.requireLowercase && !value.contains(RegExp(r'[a-z]'))) {
       errors.add(options.lowercaseMessage ??
-          'Password must contain at least one lowercase letter');
+          FormShieldLocalizations.passwordLowercase);
     }
 
     if (options.requireDigit && !value.contains(RegExp(r'[0-9]'))) {
-      errors.add(
-          options.digitMessage ?? 'Password must contain at least one digit');
+      errors.add(options.digitMessage ?? FormShieldLocalizations.passwordDigit);
     }
 
     if (options.requireSpecialChar &&
         !value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
       errors.add(options.specialCharMessage ??
-          'Password must contain at least one special character');
+          FormShieldLocalizations.passwordSpecialChar);
     }
 
     if (errors.isNotEmpty) {
@@ -107,9 +109,11 @@ class PasswordMatchRule extends ValidationRule<String> {
   final String Function() passwordGetter;
 
   /// Creates a password match validation rule.
+  ///
+  /// If [errorMessage] is not provided, uses the localized message.
   const PasswordMatchRule({
     required this.passwordGetter,
-    super.errorMessage = 'Passwords do not match',
+    super.errorMessage = '',
   });
 
   @override
@@ -119,7 +123,10 @@ class PasswordMatchRule extends ValidationRule<String> {
     }
 
     if (value != passwordGetter()) {
-      return ValidationResult.error(errorMessage);
+      final message = errorMessage.isNotEmpty
+          ? errorMessage
+          : FormShieldLocalizations.passwordsDoNotMatch;
+      return ValidationResult.error(message);
     }
 
     return const ValidationResult.success();

@@ -1,5 +1,6 @@
 import '../validation_rule.dart';
 import '../validation_result.dart';
+import '../form_shield_localizations.dart';
 
 /// Validates that a date range between two text fields is valid.
 ///
@@ -12,9 +13,11 @@ class DateRangeRule extends ValidationRule<String> {
 
   /// Creates a date range validation rule that ensures the end date (value)
   /// is after the start date.
+  ///
+  /// If [errorMessage] is not provided, uses the localized message.
   DateRangeRule({
     required this.getStartDate,
-    super.errorMessage = 'End date must be after start date',
+    super.errorMessage = '',
   });
 
   @override
@@ -40,7 +43,10 @@ class DateRangeRule extends ValidationRule<String> {
 
     // Check if end date is on or after start date
     if (endDate.isBefore(startDate)) {
-      return ValidationResult.error(errorMessage);
+      final message = errorMessage.isNotEmpty
+          ? errorMessage
+          : FormShieldLocalizations.endDateAfterStart;
+      return ValidationResult.error(message);
     }
 
     return const ValidationResult.success();

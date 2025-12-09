@@ -1,5 +1,6 @@
 import '../validation_rule.dart';
 import '../validation_result.dart';
+import '../form_shield_localizations.dart';
 
 /// Validates that a string's length is within specified bounds.
 class LengthRule extends ValidationRule<String> {
@@ -10,24 +11,24 @@ class LengthRule extends ValidationRule<String> {
   final int? maxLength;
 
   /// Creates a length validation rule with the specified bounds and error message.
+  ///
+  /// If [errorMessage] is not provided, uses the localized message.
   LengthRule({
     this.minLength,
     this.maxLength,
-    String? errorMessage,
-  }) : super(
-          errorMessage:
-              errorMessage ?? _getDefaultErrorMessage(minLength, maxLength),
-        );
+    super.errorMessage = '',
+  });
 
-  static String _getDefaultErrorMessage(int? minLength, int? maxLength) {
+  /// Gets the appropriate localized error message.
+  String _getLocalizedMessage() {
     if (minLength != null && maxLength != null) {
-      return 'Must be between $minLength and $maxLength characters';
+      return FormShieldLocalizations.lengthBetween(minLength!, maxLength!);
     } else if (minLength != null) {
-      return 'Must be at least $minLength characters';
+      return FormShieldLocalizations.lengthMin(minLength!);
     } else if (maxLength != null) {
-      return 'Must be at most $maxLength characters';
+      return FormShieldLocalizations.lengthMax(maxLength!);
     } else {
-      return 'Invalid length';
+      return FormShieldLocalizations.invalidLength;
     }
   }
 
@@ -40,11 +41,15 @@ class LengthRule extends ValidationRule<String> {
     final length = value.length;
 
     if (minLength != null && length < minLength!) {
-      return ValidationResult.error(errorMessage);
+      final message =
+          errorMessage.isNotEmpty ? errorMessage : _getLocalizedMessage();
+      return ValidationResult.error(message);
     }
 
     if (maxLength != null && length > maxLength!) {
-      return ValidationResult.error(errorMessage);
+      final message =
+          errorMessage.isNotEmpty ? errorMessage : _getLocalizedMessage();
+      return ValidationResult.error(message);
     }
 
     return const ValidationResult.success();
@@ -57,9 +62,7 @@ class MinLengthRule extends LengthRule {
   MinLengthRule(
     int minLength, {
     super.errorMessage,
-  }) : super(
-          minLength: minLength,
-        );
+  }) : super(minLength: minLength);
 }
 
 /// Validates that a string's length is at most a specified maximum.
@@ -68,7 +71,5 @@ class MaxLengthRule extends LengthRule {
   MaxLengthRule(
     int maxLength, {
     super.errorMessage,
-  }) : super(
-          maxLength: maxLength,
-        );
+  }) : super(maxLength: maxLength);
 }

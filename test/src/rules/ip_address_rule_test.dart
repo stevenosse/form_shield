@@ -3,13 +3,7 @@ import 'package:form_shield/form_shield.dart';
 
 void main() {
   group('IPAddressRule', () {
-    const defaultErrorMessage = 'Please enter a valid IP address';
     const customErrorMessage = 'Custom error message';
-
-    test('constructor sets default error message when not provided', () {
-      final rule = IPAddressRule();
-      expect(rule.errorMessage, defaultErrorMessage);
-    });
 
     test('constructor sets custom error message when provided', () {
       final rule = IPAddressRule(errorMessage: customErrorMessage);

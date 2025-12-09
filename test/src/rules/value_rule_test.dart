@@ -4,18 +4,15 @@ import 'package:form_shield/form_shield.dart';
 void main() {
   group('ValueRule', () {
     group('constructor', () {
-      test('sets default error message when not provided', () {
+      test('uses localized error message at validation time', () {
         final rule = ValueRule(minValue: 5, maxValue: 10);
-        expect(rule.errorMessage, 'Must be between 5 and 10');
+        expect(rule.validate(3).errorMessage, 'Must be between 5 and 10');
 
         final minRule = ValueRule(minValue: 5);
-        expect(minRule.errorMessage, 'Must be at least 5');
+        expect(minRule.validate(3).errorMessage, 'Must be at least 5');
 
         final maxRule = ValueRule(maxValue: 10);
-        expect(maxRule.errorMessage, 'Must be at most 10');
-
-        final noLimitsRule = ValueRule();
-        expect(noLimitsRule.errorMessage, 'Invalid value');
+        expect(maxRule.validate(15).errorMessage, 'Must be at most 10');
       });
 
       test('sets custom error message when provided', () {
@@ -101,7 +98,8 @@ void main() {
 
       expect(rule.minValue, 5);
       expect(rule.maxValue, null);
-      expect(rule.errorMessage, 'Must be at least 5');
+      // Error message is resolved at validation time
+      expect(rule.validate(3).errorMessage, 'Must be at least 5');
     });
 
     test('constructor sets custom error message when provided', () {
@@ -127,7 +125,8 @@ void main() {
 
       expect(rule.minValue, null);
       expect(rule.maxValue, 10);
-      expect(rule.errorMessage, 'Must be at most 10');
+      // Error message is resolved at validation time
+      expect(rule.validate(15).errorMessage, 'Must be at most 10');
     });
 
     test('constructor sets custom error message when provided', () {

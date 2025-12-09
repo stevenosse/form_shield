@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.9.0] - 2025-12-09
+### Added
+- Support i18n
+
 ## [0.8.2] - 2025-11-18
 ### Fixed
 - Corrected phone number regex pattern in `PhoneRule` to properly validate various formats.

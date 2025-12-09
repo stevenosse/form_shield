@@ -6,11 +6,6 @@ void main() {
     const defaultErrorMessage = 'Please enter a valid email address';
     const customErrorMessage = 'Custom error message';
 
-    test('constructor sets default error message when not provided', () {
-      final rule = EmailRule();
-      expect(rule.errorMessage, defaultErrorMessage);
-    });
-
     test('constructor sets custom error message when provided', () {
       final rule = EmailRule(errorMessage: customErrorMessage);
       expect(rule.errorMessage, customErrorMessage);

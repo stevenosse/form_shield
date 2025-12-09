@@ -4,9 +4,10 @@ import 'package:form_shield/form_shield.dart';
 void main() {
   group('DateRangeRule', () {
     group('constructor', () {
-      test('sets default error message when not provided', () {
-        final rule = DateRangeRule(getStartDate: () => '2023-01-01');
-        expect(rule.errorMessage, 'End date must be after start date');
+      test('uses localized error message at validation time', () {
+        final rule = DateRangeRule(getStartDate: () => '2023-01-15');
+        final result = rule.validate('2023-01-01');
+        expect(result.errorMessage, 'End date must be after start date');
       });
 
       test('sets custom error message when provided', () {

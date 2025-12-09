@@ -1,5 +1,6 @@
 import '../validation_rule.dart';
 import '../validation_result.dart';
+import '../form_shield_localizations.dart';
 
 /// Validates that a string is a valid URL.
 class URLRule extends ValidationRule<String> {
@@ -17,8 +18,10 @@ class URLRule extends ValidationRule<String> {
   ///
   /// If [requireProtocol] is true, URLs must include a protocol (e.g., 'https://') to be valid.
   /// If false, URLs without a protocol (e.g., 'example.com') will also be considered valid.
+  ///
+  /// If [errorMessage] is not provided, uses the localized message.
   URLRule({
-    super.errorMessage = 'Please enter a valid URL',
+    super.errorMessage = '',
     List<String>? allowedProtocols,
     bool requireProtocol = true,
     String? pattern,
@@ -37,7 +40,10 @@ class URLRule extends ValidationRule<String> {
     }
 
     if (!_urlRegex.hasMatch(value)) {
-      return ValidationResult.error(errorMessage);
+      final message = errorMessage.isNotEmpty
+          ? errorMessage
+          : FormShieldLocalizations.invalidUrl;
+      return ValidationResult.error(message);
     }
 
     // Check if the URL uses an allowed protocol
@@ -51,8 +57,11 @@ class URLRule extends ValidationRule<String> {
       }
 
       if (!hasAllowedProtocol) {
-        return ValidationResult.error(
-            'URL must use one of the following protocols: ${_allowedProtocols!.join(', ')}');
+        final message = errorMessage.isNotEmpty
+            ? errorMessage
+            : FormShieldLocalizations.urlProtocolRequired(
+                _allowedProtocols!.join(', '));
+        return ValidationResult.error(message);
       }
     }
 

@@ -31,13 +31,7 @@ void main() {
   });
 
   group('PasswordRule', () {
-    const defaultErrorMessage = 'Password does not meet requirements';
     const customErrorMessage = 'Custom error message';
-
-    test('constructor sets default error message when not provided', () {
-      final rule = PasswordRule();
-      expect(rule.errorMessage, defaultErrorMessage);
-    });
 
     test('constructor sets custom error message when provided', () {
       final rule = PasswordRule(errorMessage: customErrorMessage);
@@ -288,13 +282,7 @@ void main() {
   });
 
   group('PasswordMatchRule', () {
-    const defaultErrorMessage = 'Passwords do not match';
     const customErrorMessage = 'Custom error message';
-
-    test('constructor sets default error message when not provided', () {
-      final rule = PasswordMatchRule(passwordGetter: () => 'test');
-      expect(rule.errorMessage, defaultErrorMessage);
-    });
 
     test('constructor sets custom error message when provided', () {
       final rule = PasswordMatchRule(

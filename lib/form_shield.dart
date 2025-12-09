@@ -16,3 +16,7 @@ export 'src/rules/date_range_rule.dart';
 export 'src/rules/url_rule.dart';
 export 'src/rules/ip_address_rule.dart';
 export 'src/rules/credit_card_rule.dart';
+
+// Localization exports
+export 'src/generated/l10n.dart';
+export 'src/form_shield_localizations.dart';

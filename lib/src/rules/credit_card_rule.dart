@@ -1,5 +1,6 @@
 import '../validation_rule.dart';
 import '../validation_result.dart';
+import '../form_shield_localizations.dart';
 
 /// Validates that a string is a valid credit card number using the Luhn algorithm.
 class CreditCardRule extends ValidationRule<String> {
@@ -10,8 +11,10 @@ class CreditCardRule extends ValidationRule<String> {
   final bool allowHyphens;
 
   /// Creates a credit card validation rule with the specified configuration and error message.
+  ///
+  /// If [errorMessage] is not provided, uses the localized message.
   CreditCardRule({
-    super.errorMessage = 'Please enter a valid credit card number',
+    super.errorMessage = '',
     this.allowSpaces = true,
     this.allowHyphens = true,
   });
@@ -33,17 +36,26 @@ class CreditCardRule extends ValidationRule<String> {
 
     // Check if the normalized value contains only digits
     if (!RegExp(r'^\d+$').hasMatch(normalizedValue)) {
-      return ValidationResult.error(errorMessage);
+      final message = errorMessage.isNotEmpty
+          ? errorMessage
+          : FormShieldLocalizations.invalidCreditCard;
+      return ValidationResult.error(message);
     }
 
     // Check if the length is valid (most credit cards are between 13-19 digits)
     if (normalizedValue.length < 13 || normalizedValue.length > 19) {
-      return ValidationResult.error(errorMessage);
+      final message = errorMessage.isNotEmpty
+          ? errorMessage
+          : FormShieldLocalizations.invalidCreditCard;
+      return ValidationResult.error(message);
     }
 
     // Validate using the Luhn algorithm
     if (!_validateWithLuhnAlgorithm(normalizedValue)) {
-      return ValidationResult.error(errorMessage);
+      final message = errorMessage.isNotEmpty
+          ? errorMessage
+          : FormShieldLocalizations.invalidCreditCard;
+      return ValidationResult.error(message);
     }
 
     return const ValidationResult.success();

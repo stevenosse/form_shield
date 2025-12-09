@@ -1,5 +1,6 @@
 import '../validation_rule.dart';
 import '../validation_result.dart';
+import '../form_shield_localizations.dart';
 
 /// Validates that a date string is within specified bounds.
 ///
@@ -15,29 +16,33 @@ class DateRule extends ValidationRule<String> {
   final DateTime? maxDate;
 
   /// Creates a date validation rule with the specified bounds and error message.
+  ///
+  /// If [errorMessage] is not provided, uses the localized message.
   DateRule({
     this.minDate,
     this.maxDate,
-    String? errorMessage,
-  }) : super(
-          errorMessage:
-              errorMessage ?? _getDefaultErrorMessage(minDate, maxDate),
-        );
-
-  static String _getDefaultErrorMessage(DateTime? minDate, DateTime? maxDate) {
-    if (minDate != null && maxDate != null) {
-      return 'Date must be between ${_formatDate(minDate)} and ${_formatDate(maxDate)}';
-    } else if (minDate != null) {
-      return 'Date must be on or after ${_formatDate(minDate)}';
-    } else if (maxDate != null) {
-      return 'Date must be on or before ${_formatDate(maxDate)}';
-    } else {
-      return 'Invalid date';
-    }
-  }
+    super.errorMessage = '',
+  });
 
   static String _formatDate(DateTime date) {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+
+  /// Gets the appropriate localized error message.
+  String _getLocalizedMessage({bool isInvalidFormat = false}) {
+    if (isInvalidFormat) {
+      return FormShieldLocalizations.invalidDate;
+    }
+    if (minDate != null && maxDate != null) {
+      return FormShieldLocalizations.dateBetween(
+          _formatDate(minDate!), _formatDate(maxDate!));
+    } else if (minDate != null) {
+      return FormShieldLocalizations.dateOnOrAfter(_formatDate(minDate!));
+    } else if (maxDate != null) {
+      return FormShieldLocalizations.dateOnOrBefore(_formatDate(maxDate!));
+    } else {
+      return FormShieldLocalizations.invalidDate;
+    }
   }
 
   @override
@@ -50,15 +55,22 @@ class DateRule extends ValidationRule<String> {
     final parsed = DateTime.tryParse(value.trim());
     if (parsed == null) {
       // Invalid date format
-      return ValidationResult.error(errorMessage);
+      final message = errorMessage.isNotEmpty
+          ? errorMessage
+          : _getLocalizedMessage(isInvalidFormat: true);
+      return ValidationResult.error(message);
     }
 
     if (minDate != null && parsed.isBefore(minDate!)) {
-      return ValidationResult.error(errorMessage);
+      final message =
+          errorMessage.isNotEmpty ? errorMessage : _getLocalizedMessage();
+      return ValidationResult.error(message);
     }
 
     if (maxDate != null && parsed.isAfter(maxDate!)) {
-      return ValidationResult.error(errorMessage);
+      final message =
+          errorMessage.isNotEmpty ? errorMessage : _getLocalizedMessage();
+      return ValidationResult.error(message);
     }
 
     return const ValidationResult.success();

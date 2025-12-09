@@ -40,6 +40,7 @@ It provides a simple yet powerful way to define and apply validation logic to yo
   - [Phone number validation](#phone-number-validation)
   - [Password validation with options](#password-validation-with-options)
   - [Password confirmation](#password-confirmation)
+- [Localization (i18n)](#localization-i18n)
 - [Available validation rules](#available-validation-rules)
 - [Creating your own validation rules](#creating-your-own-validation-rules)
 - [Validation vrchitecture](#validation-architecture)
@@ -241,6 +242,56 @@ TextFormField(
   ]),
 )
 ```
+
+## Localization (i18n)
+
+Form Shield includes built-in i18n support with English and French translations. Error messages are automatically localized based on your app's locale.
+
+### Setup
+
+Add the localization delegate to your `MaterialApp`:
+
+```dart
+import 'package:form_shield/form_shield.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+MaterialApp(
+  localizationsDelegates: [
+    FormShieldI18n.delegate,  // Form Shield's localization delegate
+    GlobalMaterialLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+  ],
+  supportedLocales: FormShieldI18n.delegate.supportedLocales, // [en, fr]
+  // ...
+)
+```
+
+### How It Works
+
+Once the delegate is configured, all validation error messages will automatically use the appropriate language based on the user's locale. No changes to your validation code are required.
+
+```dart
+// Error messages are automatically localized
+TextFormField(
+  validator: validator([
+    RequiredRule(),  // Shows "This field is required" (en) or "Ce champ est requis" (fr)
+    EmailRule(),     // Shows "Please enter a valid email address" (en) or "Veuillez entrer une adresse e-mail valide" (fr)
+  ]),
+)
+```
+
+### Custom Error Messages
+
+You can still override with custom messages when needed:
+
+```dart
+RequiredRule(errorMessage: 'My custom message')  // Always uses this message
+```
+
+### Fallback Behavior
+
+If the localization delegate is not configured, Form Shield falls back to English messages. This ensures backward compatibility.
 
 ## Available validation rules
 
