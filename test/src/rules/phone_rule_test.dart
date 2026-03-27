@@ -12,20 +12,24 @@ void main() {
     });
 
     group('validate', () {
-      test('returns error for null value', () {
+      test(
+          'returns success for null value (use RequiredRule to enforce presence)',
+          () {
         final rule = PhoneRule();
         final result = rule.validate(null);
 
-        expect(result.isValid, false);
-        expect(result.errorMessage, defaultErrorMessage);
+        expect(result.isValid, true);
+        expect(result.errorMessage, null);
       });
 
-      test('returns error for empty string', () {
+      test(
+          'returns success for empty string (use RequiredRule to enforce presence)',
+          () {
         final rule = PhoneRule();
         final result = rule.validate('');
 
-        expect(result.isValid, false);
-        expect(result.errorMessage, defaultErrorMessage);
+        expect(result.isValid, true);
+        expect(result.errorMessage, null);
       });
 
       test('returns error for invalid phone numbers', () {

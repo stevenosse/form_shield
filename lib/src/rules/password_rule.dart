@@ -7,6 +7,9 @@ class PasswordOptions {
   /// Minimum length of the password.
   final int minLength;
 
+  /// Maximum length of the password. If null, no maximum is enforced.
+  final int? maxLength;
+
   /// Whether to require at least one uppercase letter.
   final bool requireUppercase;
 
@@ -16,11 +19,14 @@ class PasswordOptions {
   /// Whether to require at least one digit.
   final bool requireDigit;
 
-  /// Whether to require at least one special character.
+  /// Whether to require at least one special character (any non-alphanumeric character).
   final bool requireSpecialChar;
 
   /// Custom error message for minimum length validation.
   final String? minLengthMessage;
+
+  /// Custom error message for maximum length validation.
+  final String? maxLengthMessage;
 
   /// Custom error message for uppercase letter requirement.
   final String? uppercaseMessage;
@@ -37,11 +43,13 @@ class PasswordOptions {
   /// Creates password validation options.
   const PasswordOptions({
     this.minLength = 8,
+    this.maxLength,
     this.requireUppercase = true,
     this.requireLowercase = true,
     this.requireDigit = true,
     this.requireSpecialChar = true,
     this.minLengthMessage,
+    this.maxLengthMessage,
     this.uppercaseMessage,
     this.lowercaseMessage,
     this.digitMessage,
@@ -75,6 +83,11 @@ class PasswordRule extends ValidationRule<String> {
           FormShieldLocalizations.passwordMinLength(options.minLength));
     }
 
+    if (options.maxLength != null && value.length > options.maxLength!) {
+      errors.add(options.maxLengthMessage ??
+          FormShieldLocalizations.passwordMinLength(options.maxLength!));
+    }
+
     if (options.requireUppercase && !value.contains(RegExp(r'[A-Z]'))) {
       errors.add(options.uppercaseMessage ??
           FormShieldLocalizations.passwordUppercase);
@@ -90,7 +103,7 @@ class PasswordRule extends ValidationRule<String> {
     }
 
     if (options.requireSpecialChar &&
-        !value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+        !value.contains(RegExp(r'[^a-zA-Z0-9]'))) {
       errors.add(options.specialCharMessage ??
           FormShieldLocalizations.passwordSpecialChar);
     }

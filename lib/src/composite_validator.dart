@@ -8,6 +8,7 @@ class CompositeValidator<T> {
   final List<String? Function(T?)> _syncValidators;
   final List<AsyncValidator<T>> _asyncValidators;
   String? _syncErrorMessage;
+  bool _hasValidated = false;
 
   /// Creates a `CompositeValidator` with the provided lists of validators.
   CompositeValidator._({
@@ -22,7 +23,9 @@ class CompositeValidator<T> {
       _asyncValidators.any((validator) => validator.isValidating);
 
   /// Returns true if all async validators have passed validation.
-  bool get isValid => _asyncValidators.every((validator) => validator.isValid);
+  /// Returns false if [call] or [validateAsync] has not been invoked yet.
+  bool get isValid =>
+      _hasValidated && _asyncValidators.every((validator) => validator.isValid);
 
   /// Returns the first error message from sync validators, or if none, the first error from async validators.
   String? get errorMessage {
@@ -52,6 +55,7 @@ class CompositeValidator<T> {
       }
     }
     _syncErrorMessage = null;
+    _hasValidated = true;
     for (final validator in _asyncValidators) {
       validator.validate(value);
     }
@@ -73,6 +77,7 @@ class CompositeValidator<T> {
       }
     }
     _syncErrorMessage = null;
+    _hasValidated = true;
     final results = await Future.wait(
         _asyncValidators.map((validator) => validator.validateAsync(value)));
     return results.every((result) => result);

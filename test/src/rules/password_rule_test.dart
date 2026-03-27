@@ -7,10 +7,21 @@ void main() {
       const options = PasswordOptions();
 
       expect(options.minLength, 8);
+      expect(options.maxLength, null);
       expect(options.requireUppercase, true);
       expect(options.requireLowercase, true);
       expect(options.requireDigit, true);
       expect(options.requireSpecialChar, true);
+    });
+
+    test('constructor sets maxLength when provided', () {
+      const options = PasswordOptions(maxLength: 20);
+      expect(options.maxLength, 20);
+    });
+
+    test('constructor sets maxLengthMessage when provided', () {
+      const options = PasswordOptions(maxLengthMessage: 'Too long!');
+      expect(options.maxLengthMessage, 'Too long!');
     });
 
     test('constructor sets custom values correctly', () {
@@ -163,6 +174,115 @@ void main() {
 
         expect(result.isValid, false);
         expect(result.errorMessage, contains('special character'));
+      });
+
+      test(
+          'returns error when password is pure alphanumeric with requireSpecialChar',
+          () {
+        final rule = PasswordRule(
+            options: const PasswordOptions(
+          minLength: 5,
+          requireSpecialChar: true,
+          requireUppercase: false,
+          requireLowercase: false,
+          requireDigit: false,
+        ));
+        // Purely alphanumeric — must fail
+        for (final value in ['ABCDE', 'abc12', 'ABC123DEF']) {
+          final result = rule.validate(value);
+          expect(result.isValid, false,
+              reason: '"$value" has no special char and should be invalid');
+        }
+      });
+
+      test('accepts common special chars that the old regex rejected', () {
+        // The old regex [!@#\$%^&*(),.?":{}|<>\-] excluded: _ ~ \' ; / + = `
+        // The new regex [^a-zA-Z0-9] accepts all of them.
+        final rule = PasswordRule(
+            options: const PasswordOptions(
+          minLength: 5,
+          requireSpecialChar: true,
+          requireUppercase: false,
+          requireLowercase: false,
+          requireDigit: false,
+        ));
+        final specialChars = [
+          'abcd_', // underscore
+          'abcd-', // hyphen
+          'abcd~', // tilde
+          "abcd'", // single quote
+          'abcd;', // semicolon
+          'abcd/', // forward slash
+          'abcd+', // plus
+          'abcd=', // equals
+          'abcd`', // backtick
+          'abcd ', // space (non-alphanumeric)
+        ];
+        for (final value in specialChars) {
+          final result = rule.validate(value);
+          expect(result.isValid, true,
+              reason: '"$value" should be accepted as having a special char');
+        }
+      });
+
+      test('returns error when password exceeds maxLength', () {
+        final rule = PasswordRule(
+            options: const PasswordOptions(
+          maxLength: 12,
+          requireUppercase: false,
+          requireLowercase: false,
+          requireDigit: false,
+          requireSpecialChar: false,
+        ));
+        final result = rule.validate('ThisPassIsWayTooLong');
+
+        expect(result.isValid, false);
+      });
+
+      test('returns success when password is exactly at maxLength', () {
+        final rule = PasswordRule(
+            options: const PasswordOptions(
+          maxLength: 8,
+          requireUppercase: false,
+          requireLowercase: false,
+          requireDigit: false,
+          requireSpecialChar: false,
+        ));
+        final result = rule.validate('exactly8');
+
+        expect(result.isValid, true);
+        expect(result.errorMessage, null);
+      });
+
+      test('returns success when password is within min and max length', () {
+        final rule = PasswordRule(
+            options: const PasswordOptions(
+          minLength: 6,
+          maxLength: 20,
+          requireUppercase: false,
+          requireLowercase: false,
+          requireDigit: false,
+          requireSpecialChar: false,
+        ));
+        expect(rule.validate('valid1').isValid, true);
+        expect(rule.validate('validlongerpassword').isValid, true);
+        expect(rule.validate('toolongpassword1234567890').isValid, false);
+      });
+
+      test('uses custom error message for maxLength validation', () {
+        final rule = PasswordRule(
+            options: const PasswordOptions(
+          maxLength: 10,
+          maxLengthMessage: 'Password is too long!',
+          requireUppercase: false,
+          requireLowercase: false,
+          requireDigit: false,
+          requireSpecialChar: false,
+        ));
+        final result = rule.validate('thisistoolong');
+
+        expect(result.isValid, false);
+        expect(result.errorMessage, contains('Password is too long!'));
       });
 
       test('returns success when password meets all requirements', () {

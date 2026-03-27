@@ -48,19 +48,14 @@ class URLRule extends ValidationRule<String> {
 
     // Check if the URL uses an allowed protocol
     if (_allowedProtocols != null && _allowedProtocols!.isNotEmpty) {
-      bool hasAllowedProtocol = false;
-      for (final protocol in _allowedProtocols!) {
-        if (value.toLowerCase().startsWith('$protocol://')) {
-          hasAllowedProtocol = true;
-          break;
-        }
-      }
+      final protocols = _allowedProtocols!;
+      final hasAllowedProtocol = protocols
+          .any((protocol) => value.toLowerCase().startsWith('$protocol://'));
 
       if (!hasAllowedProtocol) {
         final message = errorMessage.isNotEmpty
             ? errorMessage
-            : FormShieldLocalizations.urlProtocolRequired(
-                _allowedProtocols!.join(', '));
+            : FormShieldLocalizations.urlProtocolRequired(protocols.join(', '));
         return ValidationResult.error(message);
       }
     }

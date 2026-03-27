@@ -28,10 +28,11 @@ abstract class AsyncValidationRule<T> extends ValidationRule<T> {
 
   @override
   ValidationResult validate(T? value) {
-    // This is a fallback for sync validation contexts
-    // Ideally, async rules should be validated using validateAsync
-    throw AssertionError(
-        'You must override and use validateAsync for async validation');
+    // AsyncValidationRule cannot be used in a synchronous validation context.
+    // Use validateAsync instead, or wrap with CompositeValidator/AsyncValidator.
+    throw UnsupportedError(
+        'AsyncValidationRule must be used with validateAsync. '
+        'Use AsyncValidator or CompositeValidator for async validation.');
   }
 
   @override

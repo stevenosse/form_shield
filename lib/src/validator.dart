@@ -8,12 +8,9 @@ class Validator<T> {
   /// The list of validation rules to apply.
   final List<ValidationRule<T>> _rules;
 
-  String? _errorMessage;
-
   /// Creates an immutable `Validator` instance with the provided list of rules.
   Validator._(List<ValidationRule<T>> rules)
-      : _rules = List.unmodifiable(rules),
-        _errorMessage = null;
+      : _rules = List.unmodifiable(rules);
 
   /// Creates a new `Validator` instance by adding the provided [rule]
   /// to the existing list of rules.
@@ -21,24 +18,17 @@ class Validator<T> {
     return Validator<T>._([..._rules, rule]);
   }
 
-  /// Returns the current error message from synchronous validation.
-  String? get errorMessage => _errorMessage;
-
   /// Executes the validation logic for the given [value] against all registered rules.
   ///
   /// Synchronous rules are applied immediately, returning an error message if any fail.
   /// Returns `null` if validation passes.
   String? call(T? value) {
-    // Run sync validation
     for (final rule in _rules) {
       final result = rule.validate(value);
       if (!result.isValid) {
-        _errorMessage = result.errorMessage;
-        return _errorMessage;
+        return result.errorMessage;
       }
     }
-
-    _errorMessage = null;
     return null;
   }
 }

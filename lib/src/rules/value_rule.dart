@@ -110,7 +110,14 @@ class FormInputValueRule extends ValidationRule<String> {
       return const ValidationResult.success();
     }
 
-    num parsedValue = convert(value);
+    final num parsedValue;
+    try {
+      parsedValue = convert(value);
+    } catch (_) {
+      final message =
+          errorMessage.isNotEmpty ? errorMessage : _getLocalizedMessage();
+      return ValidationResult.error(message);
+    }
 
     if (minValue != null && parsedValue < minValue!) {
       final message =
