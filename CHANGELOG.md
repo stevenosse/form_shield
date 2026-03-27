@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.10.0] - 2026-03-27
+
+### Added
+- `PasswordOptions.maxLength` — optional maximum password length with a dedicated `maxLengthMessage`.
+
+### Fixed
+- `PhoneRule` now returns `success` for null/empty values, deferring required-field enforcement to `RequiredRule` (consistent with every other rule).
+- `PasswordRule` special character check now uses `[^a-zA-Z0-9]` (any non-alphanumeric character), fixing false rejections of `_`, `-`, `~`, `'`, `;`, `/`, `+`, `=`, and other common symbols.
+- `FormInputValueRule.validate` now wraps the `convert` callback in a `try/catch`, returning a validation error instead of throwing an unhandled exception when the input cannot be parsed.
+- `AsyncValidationRule.validate` now throws `UnsupportedError` instead of `AssertionError` (which was stripped in release builds).
+
+### Changed
+- `Validator` no longer holds mutable `_errorMessage` state. The `errorMessage` getter has been removed — use the return value of `call()` directly.
+- `EmailRule` regex is now a `static final` class member (no per-instance allocation). The `pattern` parameter is now nullable (`String?`).
+- `PhoneRule` regex is now a `static final` class member. The `pattern` parameter is now nullable (`String?`).
+- `URLRule` `allowedProtocols` check no longer uses redundant `!` null assertions.
+- `CompositeValidator.isValid` now returns `false` before `call()` or `validateAsync()` has been invoked, preventing a false-positive on first render.
+
 ## [0.9.0] - 2025-12-09
 ### Added
 - Support i18n
